@@ -10,12 +10,16 @@ export function initGlobe(container) {
 
     // Create scene
     scene = new THREE.Scene();
-    console.log("Scene created");
+    console.log("Scene created");  
 
     // Create camera
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
-    console.log("Camera created");
+    console.log("Camera created"); 
+
+    // Expose scene and camera to window object for access from main.js
+    window.scene = scene;
+    window.camera = camera;
 
     // Create renderer
     renderer = new THREE.WebGLRenderer({ antialias: true  });
