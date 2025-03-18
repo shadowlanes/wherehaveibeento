@@ -54,24 +54,8 @@ export function initGlobe(container) {
     // Start animation immediately
     animate();
 
-    // Try to load texture
-    textureLoader.load(
-        'assets/world-map.jpg',
-        function(texture) {
-            // Success - replace material with textured one
-            console.log("Texture loaded successfully");
-            const globeMaterial = new THREE.MeshPhongMaterial({
-                map: texture,
-                bumpScale: 0.02,
-            });
-            globe.material = globeMaterial;
-        },
-        undefined,
-        function(error) {
-            // Error handling
-            console.error("Error loading texture:", error);
-        }
-    );
+    // Load Earth texture with proper OSM mapping
+    loadOSMTextureForGlobe();
 
     // Set up mouse and touch events
     setupEvents(container);
@@ -80,6 +64,93 @@ export function initGlobe(container) {
     window.addEventListener('resize', onWindowResize);
 
     return globe;
+}
+
+// Load OpenStreetMap tiles and map them to a globe texture
+function loadOSMTextureForGlobe() {
+    // For simplicity, we'll use a single OSM world map image
+    // This works better than trying to stitch individual tiles in Three.js
+    const worldMapUrl = 'https://c.tile.openstreetmap.org/3/4/2.png';
+
+    // Create a canvas to stitch multiple tiles if needed
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+
+    // Fill with light blue background color for oceans
+    ctx.fillStyle = '#a4bfef';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Load the main map image
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function() {
+        // Draw the map on the canvas
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Create texture from canvas
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        
+        // Apply the texture to the globe
+        globe.material = new THREE.MeshPhongMaterial({
+            map: texture,
+            bumpScale: 0.02,
+        });
+        console.log("OSM texture applied to globe");
+    };
+    
+    // Fallback - load a backup texture if OSM fails
+    img.onerror = function() {
+        console.error("Failed to load OSM texture, using backup");
+        const backupTexture = new THREE.TextureLoader().load(
+            'https://cdn.jsdelivr.net/npm/three/examples/textures/land_ocean_ice_cloud_2048.jpg',
+            function(texture) {
+                globe.material = new THREE.MeshPhongMaterial({
+                    map: texture,
+                    bumpScale: 0.02,
+                });
+            }
+        );
+    };
+    
+    img.src = worldMapUrl;
+}
+
+// Update texture based on zoom level
+function updateGlobeTexture(zoomLevel) {
+    // Only update texture if significantly zoomed in or out (save bandwidth)
+    const zoomThreshold = 3; // Adjust as needed
+    if (zoomLevel <= zoomThreshold) {
+        // For far zooms, use a single map image
+        const worldMapUrl = 'https://c.tile.openstreetmap.org/2/2/1.png';
+        
+        const texture = new THREE.TextureLoader();
+        texture.crossOrigin = 'Anonymous';
+        texture.load(
+            worldMapUrl,
+            (texture) => {
+                globe.material.map = texture;
+                globe.material.needsUpdate = true;
+            }
+        );
+    } else {
+        // Load multiple higher resolution tiles for closer zooms
+        // This is a placeholder - real implementation would use proper tile math
+        const zoom = Math.min(5, Math.floor(zoomLevel));
+        const worldMapUrl = `https://c.tile.openstreetmap.org/${zoom}/15/15.png`;
+        
+        const texture = new THREE.TextureLoader();
+        texture.crossOrigin = 'Anonymous';
+        texture.load(
+            worldMapUrl,
+            (texture) => {
+                globe.material.map = texture;
+                globe.material.needsUpdate = true;
+            }
+        );
+    }
 }
 
 function setupEvents(container) {
@@ -168,6 +239,11 @@ function onMouseWheel(event) {
     // Limit zoom
     if (zoomAmount >= minZoom && zoomAmount <= maxZoom) {
         camera.position.z = zoomAmount;
+        // Call texture update with debounce to prevent too many requests
+        clearTimeout(window.zoomDebounce);
+        window.zoomDebounce = setTimeout(() => {
+            updateGlobeTexture(zoomAmount);
+        }, 200);
     }
 }
 
@@ -180,8 +256,8 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
 
-    // Auto-rotation (very slow)
-    if (!isDragging && globe) {
+    // Rotate only if fully zoomed out
+    if (!isDragging && globe && camera.position.z >= maxZoom) {
         globe.rotation.y += 0.001;
     }
 

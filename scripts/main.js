@@ -1,9 +1,16 @@
-import { initGlobe } from './globe.js';
+// Import required modules
+import * as THREE from 'three';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
+import ThreeGlobe from 'three-globe';
 
-// Track markers for replay functionality
+// Global variables
+let scene, camera, renderer, controls;
+let threeGlobe;
 let markers = [];
 let isReplaying = false;
-let globe; // Store globe reference globally
+
+// Add country data for local geocoding
+let worldCountries = null; // Will store GeoJSON countries data
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Content loaded");
@@ -14,104 +21,521 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (existingUsername) {
         // Show welcome back message
-        showWelcomeBackMessage(existingUsername);  
+        showWelcomeBackMessage(existingUsername);
     }
+    
+    // Load country boundaries data
+    loadCountryData();
     
     try {
         console.log("Initializing globe...");
-        globe = initGlobe(container);
+        initThreeGlobe(container);
         
         // Handle keyboard controls
         document.addEventListener('keydown', (event) => {
-            // Rotation speed
-            const rotationSpeed = 0.05;
-                
+            if (!threeGlobe) return;
+            
+            // Rotation speed in radians
+            const rotationSpeed = THREE.MathUtils.degToRad(5);
+            
             switch(event.key) { 
                 case 'ArrowLeft': 
-                    globe.rotation.y += rotationSpeed;
+                    // Manual rotation of the globe (not using controls)
+                    threeGlobe.rotation.y += rotationSpeed;
                     break;
                 case 'ArrowRight':
-                    globe.rotation.y -= rotationSpeed;
+                    threeGlobe.rotation.y -= rotationSpeed;
                     break; 
                 case 'ArrowUp':
-                    globe.rotation.x += rotationSpeed;
+                    threeGlobe.rotation.x += rotationSpeed;
+                    // Limit rotation to prevent flipping
+                    threeGlobe.rotation.x = Math.min(threeGlobe.rotation.x, Math.PI / 2);
                     break;
                 case 'ArrowDown':
-                    globe.rotation.x -= rotationSpeed;
+                    threeGlobe.rotation.x -= rotationSpeed;
+                    // Limit rotation to prevent flipping
+                    threeGlobe.rotation.x = Math.max(threeGlobe.rotation.x, -Math.PI / 2);
                     break;
             }
         });
 
-        // Handle right-click for placing pins
-        container.addEventListener('contextmenu', (event) => {
-            event.preventDefault(); 
-            
-            // Get mouse position
-            const mouse = new THREE.Vector2(
-                (event.clientX / window.innerWidth) * 2 - 1,
-                -(event.clientY / window.innerHeight) * 2 + 1
-            );
-            
-            // Create raycaster 
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(mouse, window.camera);
-            
-            // Check for intersections with the globe
-            const intersects = raycaster.intersectObject(globe);
-            
-            if (intersects.length > 0) {
-                const point = intersects[0].point.clone();
-                
-                // Convert 3D point to lat/long with improved accuracy,
-                // accounting for the globe's rotation
-                const coords = cartesianToLatLng(point);
-                
-                console.log(`Clicked at 3D point: ${point.x.toFixed(2)}, ${point.y.toFixed(2)}, ${point.z.toFixed(2)}`);
-                console.log(`Converted to lat/lng: ${coords.lat.toFixed(2)}, ${coords.lng.toFixed(2)}`);
-                
-                // Get country name based on coordinates
-                getCountryFromCoordinates(coords.lat, coords.lng).then(countryName => {
-                    console.log(`Identified country: ${countryName}`);
-                    // Add pin with animation
-                    addPin(point, countryName);
-                }).catch(error => {
-                    console.error("Error getting country:", error);
-                    // Still add pin, but with unknown label
-                    addPin(point, "Unknown Location");
-                });
-            }
-        });
+        // Add context menu (right-click) event for placing pins
+        container.addEventListener('contextmenu', handleRightClick);
         
         // Setup replay button
-        document.getElementById('replay-button').addEventListener('click', () => {
-            replayJourney();
-        });
+        document.getElementById('replay-button').addEventListener('click', replayJourney);
         
     } catch (error) {
         console.error("Error initializing globe:", error);
     }
 });
 
-// Helper function to convert cartesian coordinates to lat/lng
-function cartesianToLatLng(worldPoint) {
-    // Transform worldPoint to the globe's local space
-    globe.updateMatrixWorld();
-    const inverseGlobeMatrix = new THREE.Matrix4().copy(globe.matrixWorld).invert();
-    const localPoint = worldPoint.clone().applyMatrix4(inverseGlobeMatrix);
+// Load GeoJSON data of country boundaries
+function loadCountryData() {
+    fetch('https://unpkg.com/world-atlas/countries-110m.json')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Country boundaries data loaded');
+            worldCountries = data;
+        })
+        .catch(error => {
+            console.error('Failed to load country data:', error);
+        });
+}
 
-    // Assume the globe's radius is 2, with +Y as "north pole"
-    const radius = 2;
-    // Make sure we don't exceed radius
-    const normalizedY = Math.max(-radius, Math.min(radius, localPoint.y));
+function initThreeGlobe(container) {
+    // Create ThreeGlobe instance
+    threeGlobe = new ThreeGlobe({ waitForGlobeReady: true })
+        .globeTileEngineUrl((x, y, l) => `https://tile.openstreetmap.org/${l}/${x}/${y}.png`);
+    
+    const globeRadius = threeGlobe.getGlobeRadius();
+    
+    // Setup renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+    
+    // Setup scene
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+    scene.add(threeGlobe);
+    scene.add(new THREE.AmbientLight(0xcccccc, Math.PI));
+    scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
+    
+    // Setup camera
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 300;
+    
+    // Add camera controls
+    setupControls(container);
+    
+    // Enable auto-rotation
+    enableAutoRotation();
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        if (controls) controls.handleResize();
+    });
+    
+    // Start animation loop
+    animate();
+    
+    return threeGlobe;
+}
 
-    // Latitude: -90 (south pole) to +90 (north pole)
-    const lat = Math.asin(normalizedY / radius) * (180 / Math.PI);
+function setupControls(container) {
+    // Create TrackballControls
+    controls = new TrackballControls(camera, renderer.domElement);
+    
+    // Configure controls
+    controls.rotateSpeed = 1.5;
+    controls.zoomSpeed = 0.8;
+    controls.panSpeed = 0.3;
+    
+    controls.minDistance = 101;  // Prevent zooming too close
+    controls.maxDistance = 500;  // Prevent zooming too far out
+    
+    controls.noPan = true; // Disable panning for simplicity
+    
+    // Listen for control changes
+    controls.addEventListener('change', () => {
+        // Update globe's point of view when camera changes
+        if (threeGlobe) threeGlobe.setPointOfView(camera);
+    });
+    
+    // Add direct mouse rotation handling (fallback)
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    
+    container.addEventListener('mousedown', (event) => {
+        isDragging = true;
+        previousMousePosition = {
+            x: event.clientX,
+            y: event.clientY
+        };
+    });
+    
+    document.addEventListener('mousemove', (event) => {
+        if (!isDragging || !threeGlobe) return;
+        
+        const deltaMove = {
+            x: event.clientX - previousMousePosition.x,
+            y: event.clientY - previousMousePosition.y
+        };
+        
+        // Apply rotation directly to the globe (fallback method)
+        // This is in addition to the TrackballControls
+        const rotationSpeed = 0.003;
+        threeGlobe.rotation.y += deltaMove.x * rotationSpeed;
+        threeGlobe.rotation.x += deltaMove.y * rotationSpeed;
+        
+        previousMousePosition = {
+            x: event.clientX,
+            y: event.clientY
+        };
+    });
+    
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+}
 
-    // Longitude: -180 to +180
-    // Note the negative Z since typical lat/long expects zero at prime meridian along Z= -∞
-    const lng = Math.atan2(localPoint.x, -localPoint.z) * (180 / Math.PI);
+// Enable auto-rotation when not interacting with the globe
+function enableAutoRotation() {
+    let lastInteractionTime = Date.now();
+    const autoRotationDelay = 3000; // ms to wait after interaction before auto-rotating
+    
+    // Update last interaction time when controls change
+    controls.addEventListener('change', () => {
+        lastInteractionTime = Date.now();
+    });
+    
+    // Add to animation loop
+    window.checkAutoRotation = () => {
+        if (Date.now() - lastInteractionTime > autoRotationDelay) {
+            // Auto-rotate when not interacting
+            threeGlobe.rotation.y += 0.001;
+        }
+    };
+}
 
+function animate() {
+    requestAnimationFrame(animate);
+    
+    // Update controls
+    if (controls) controls.update();
+    
+    // Check for auto-rotation
+    if (window.checkAutoRotation) window.checkAutoRotation();
+    
+    // Render scene
+    renderer.render(scene, camera);
+}
+
+function handleRightClick(event) {
+    event.preventDefault();
+    if (isReplaying) return;
+    
+    // Get mouse position
+    const mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1,
+        -(event.clientY / window.innerHeight) * 2 + 1
+    );
+    
+    // Create raycaster
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    
+    // Find all meshes in the globe recursively
+    const globeMeshes = [];
+    threeGlobe.traverse((object) => {
+        if (object.isMesh) {
+            globeMeshes.push(object);
+        }
+    });
+    
+    // Check for intersections with any mesh in the globe
+    const intersects = raycaster.intersectObjects(globeMeshes, true);
+    
+    if (intersects.length > 0) {
+        const intersection = intersects[0];
+        const point = intersection.point;
+        console.log("Intersection point:", point);
+        
+        // Convert to lat/lng using proper conversion from the hit point
+        const latLng = getLatLngFromPoint(point);
+        const { lat, lng } = latLng;
+        
+        console.log(`Right-clicked at lat: ${lat.toFixed(2)}, lng: ${lng.toFixed(2)}`);
+        
+        // Get country name based on coordinates - use local data if available
+        getCountryFromCoordinates(lat, lng)
+            .then(countryName => {
+                console.log(`Identified country: ${countryName}`);
+                addPin(lat, lng, countryName);
+            })
+            .catch(error => {
+                console.error("Error getting country:", error);
+                addPin(lat, lng, "Unknown Location");
+            });
+    }
+}
+
+// More accurate lat/lng conversion from 3D point
+function getLatLngFromPoint(point) {
+    // Get a vector from globe center to the point
+    const pointVector = new THREE.Vector3();
+    pointVector.copy(point);
+    
+    // Since the globe might be rotated, we need to get its transformation matrix
+    const globePosition = threeGlobe.position;
+    pointVector.sub(globePosition); // Vector relative to globe center
+    
+    // Apply inverse of globe's world rotation to get point in standard coordinates
+    const globeQuaternion = threeGlobe.quaternion;
+    const inverseRotation = globeQuaternion.clone().invert();
+    pointVector.applyQuaternion(inverseRotation);
+    
+    // Now convert to lat/lng
+    const radius = threeGlobe.getGlobeRadius();
+    // Normalize to get a unit vector from center to point
+    pointVector.normalize();
+    
+    const lat = 90 - Math.acos(pointVector.y) * 180 / Math.PI;
+    const lng = (Math.atan2(pointVector.x, pointVector.z) * 180 / Math.PI + 270) % 360 - 180;
+    
     return { lat, lng };
+}
+
+// Function to get country name from coordinates - prioritizes local lookup
+async function getCountryFromCoordinates(lat, lng) {
+    // First try to identify country from local GeoJSON data
+    if (worldCountries) {
+        try {
+            const countryName = findCountryNameFromGeoJSON(lat, lng);
+            if (countryName) return countryName;
+        } catch (error) {
+            console.warn('Local geocoding failed, falling back to API:', error);
+        }
+    }
+    
+    // Fall back to API if local search fails or data not loaded
+    try {
+        console.log(`Falling back to API for coordinates: ${lat}, ${lng}`);
+        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+        const data = await response.json();
+        console.log("Geocoding API response:", data);
+        return data.countryName || "Unknown";
+    } catch (error) {
+        console.error("Geocoding error:", error);
+        return "Unknown";
+    }
+}
+
+// Function to find country name from local GeoJSON data
+function findCountryNameFromGeoJSON(lat, lng) {
+    if (!worldCountries || !worldCountries.objects || !worldCountries.objects.countries) {
+        return null;
+    }
+    
+    const { features } = worldCountries.objects.countries;
+    
+    for (const feature of features) {
+        if (feature.geometry && isPointInPolygon(lat, lng, feature.geometry.coordinates)) {
+            return feature.properties.name;
+        }
+    }
+    
+    return null;
+}
+
+// Check if point is within a polygon (simplified point-in-polygon test)
+function isPointInPolygon(lat, lng, polygonCoordinates) {
+    // Note: This is a simplified implementation that would need to be 
+    // enhanced for a production environment with proper geospatial point-in-polygon testing
+    
+    // Convert polygons to point arrays
+    const polygons = Array.isArray(polygonCoordinates[0][0]) ? 
+        polygonCoordinates : [polygonCoordinates];
+    
+    for (const polygon of polygons) {
+        let inside = false;
+        
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            const xi = polygon[i][0], yi = polygon[i][1];
+            const xj = polygon[j][0], yj = polygon[j][1];
+            
+            const intersect = ((yi > lng) !== (yj > lng)) &&
+                (lat < (xj - xi) * (lng - yi) / (yj - yi) + xi);
+            
+            if (intersect) inside = !inside;
+        }
+        
+        if (inside) return true;
+    }
+    
+    return false;
+}
+
+// Function to add a pin at the specified coordinates
+function addPin(lat, lng, label) {
+    const globeRadius = threeGlobe.getGlobeRadius();
+    
+    // Create a marker object
+    const marker = {
+        id: Date.now(),
+        lat,
+        lng,
+        label,
+        color: 'red',
+        initialColor: 'red'
+    };
+    
+    // Add to markers collection
+    markers.push(marker);
+    
+    // Convert lat/lng to 3D position in globe's coordinate system
+    const phi = (90 - lat) * Math.PI / 180;
+    const theta = (lng + 180) * Math.PI / 180;
+    const r = globeRadius * 1.01; // Slightly above surface
+    
+    const x = -r * Math.sin(phi) * Math.sin(theta);
+    const y = r * Math.cos(phi);
+    const z = r * Math.sin(phi) * Math.cos(theta);
+    
+    // Apply globe's current rotation to the position
+    const pinPosition = new THREE.Vector3(x, y, z);
+    
+    // Create pin group
+    const pinGroup = new THREE.Group();
+    
+    // Create pin head (sphere)
+    const pinHead = new THREE.Mesh(
+        new THREE.SphereGeometry(0.5, 16, 16),
+        new THREE.MeshPhongMaterial({ color: marker.color })
+    );
+    pinGroup.add(pinHead);
+    
+    // Create pin body (cylinder)
+    const pinBody = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.1, 0.1, 1, 8),
+        new THREE.MeshPhongMaterial({ color: marker.color })
+    );
+    pinBody.position.y = -0.75;
+    pinGroup.add(pinBody);
+    
+    // Create pin label with better visibility
+    const label3d = createTextSprite(marker.label);
+    label3d.position.y = 1.2;
+    pinGroup.add(label3d);
+    
+    // Position the pin
+    pinGroup.position.copy(pinPosition);
+    
+    // Make pin face outward from the globe center
+    pinGroup.lookAt(threeGlobe.position);
+    pinGroup.rotateX(Math.PI / 2); // Adjust orientation
+    
+    // Add pin directly to the threeGlobe object to ensure it rotates with the globe
+    threeGlobe.add(pinGroup);
+    marker.object = pinGroup;
+    
+    // Animate pin drop
+    animatePinDrop(marker, pinPosition, globeRadius);
+    
+    return marker;
+}
+
+// Create a text sprite for marker labels with improved visibility
+function createTextSprite(text) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const padding = 10;
+    const fontSize = 28; // Increase font size
+    
+    // Set canvas size based on text
+    context.font = `bold ${fontSize}px Arial`; // Make text bold
+    const textMetrics = context.measureText(text);
+    const textWidth = textMetrics.width;
+    const width = Math.max(textWidth + (padding * 2), 100); // Minimum width
+    const height = fontSize + (padding * 2);
+    
+    canvas.width = width;
+    canvas.height = height;
+    
+    // Draw background with stronger opacity
+    context.fillStyle = 'rgba(0, 0, 0, 0.8)'; // Darker background
+    context.fillRect(0, 0, width, height);
+    
+    // Add border for better visibility
+    context.strokeStyle = 'white';
+    context.lineWidth = 2;
+    context.strokeRect(2, 2, width - 4, height - 4);
+    
+    // Draw text
+    context.font = `bold ${fontSize}px Arial`;
+    context.fillStyle = 'white';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(text, width / 2, height / 2);
+    
+    // Create texture and sprite
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter; // Prevent blurry text
+    const material = new THREE.SpriteMaterial({ 
+        map: texture,
+        transparent: true,
+        depthTest: false, // Ensure label is always visible
+        depthWrite: false
+    });
+    const sprite = new THREE.Sprite(material);
+    
+    // Scale sprite
+    const scaleRatio = width / height;
+    sprite.scale.set(scaleRatio * 3, 3, 1);
+    
+    return sprite;
+}
+
+// Animate a pin dropping onto the globe
+function animatePinDrop(marker, finalPosition, globeRadius) {
+    // Start position higher above the surface
+    const direction = finalPosition.clone().normalize();
+    const startPosition = direction.clone().multiplyScalar(globeRadius * 1.3);
+    
+    // Set initial position
+    if (marker.object) {
+        marker.object.position.copy(startPosition);
+    }
+    
+    // Animate drop
+    const duration = 1000; // ms
+    const start = performance.now();
+    
+    function animate(time) {
+        const elapsed = time - start;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Use bounce easing
+        const bouncedProgress = bounceEaseOut(progress);
+        
+        // Interpolate position
+        const currentPosition = new THREE.Vector3().lerpVectors(startPosition, finalPosition, bouncedProgress);
+        if (marker.object) {
+            marker.object.position.copy(currentPosition);
+            
+            // Keep the pin oriented correctly
+            marker.object.lookAt(threeGlobe.position);
+            marker.object.rotateX(Math.PI / 2);
+        }
+        
+        // Continue until animation is complete
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+
+// Bounce easing function
+function bounceEaseOut(x) {
+    const n1 = 7.5625;
+    const d1 = 2.75;
+    
+    if (x < 1 / d1) {
+        return n1 * x * x;
+    } else if (x < 2 / d1) {
+        return n1 * (x -= 1.5 / d1) * x + 0.75;
+    } else if (x < 2.5 / d1) {
+        return n1 * (x -= 2.25 / d1) * x + 0.9375;
+    } else {
+        return n1 * (x -= 2.625 / d1) * x + 0.984375;
+    }
 }
 
 // Function to show welcome back message
@@ -144,136 +568,7 @@ function showWelcomeBackMessage(username) {
     }, 3000);
 }
 
-// Function to get country name from coordinates
-async function getCountryFromCoordinates(lat, lng) {
-    try {
-        // Use a reverse geocoding API
-        console.log(`Getting country for coordinates: ${lat}, ${lng}`);
-        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
-        const data = await response.json();
-        console.log("Geocoding response:", data);
-        return data.countryName || "Unknown";
-    } catch (error) {
-        console.error("Geocoding error:", error);
-        return "Unknown";
-    }
-}
-
-// Function to add an animated pin
-function addPin(worldPoint, countryName) {
-    // Transform the clicked point from world space to the globe's local space
-    globe.updateMatrixWorld();
-    const inverseGlobeMatrix = new THREE.Matrix4().copy(globe.matrixWorld).invert();
-    const localPoint = worldPoint.clone().applyMatrix4(inverseGlobeMatrix);
-
-    // Calculate surface and start positions in local space
-    const surfaceLocal = localPoint.clone().normalize().multiplyScalar(2);
-    const startLocal = localPoint.clone().normalize().multiplyScalar(3);
-
-    // Create pin geometry
-    const pinHeight = 0.3;
-    const pinHeadRadius = 0.04;
-    const pinColor = 0xff0000;
-
-    // Create pin head (sphere)
-    const pinHead = new THREE.Mesh(
-        new THREE.SphereGeometry(pinHeadRadius, 16, 16),
-        new THREE.MeshBasicMaterial({ color: pinColor })
-    );
-
-    // Create pin body (cylinder)
-    const pinBody = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.01, 0.01, pinHeight, 8),
-        new THREE.MeshBasicMaterial({ color: pinColor })
-    );
-
-    // Position pin body
-    pinBody.position.y = -pinHeight / 2;
-
-    const pinGroup = new THREE.Group();
-    pinGroup.add(pinHead);
-    pinGroup.add(pinBody);
-
-    // Save final surface position in userData for reference
-    pinGroup.userData.surfacePosition = surfaceLocal.clone();
-
-    // Create a wrapper Object3D that's placed in the globe's local coordinates
-    const pinWrapper = new THREE.Object3D();
-    pinWrapper.position.copy(surfaceLocal);
-
-    // Orient the pin so it faces outward
-    const lookAtLocal = surfaceLocal.clone().multiplyScalar(2);
-    pinWrapper.lookAt(lookAtLocal);
-
-    // Add the pin group to the wrapper
-    pinWrapper.add(pinGroup);
-
-    // Start position offset in local coords
-    // We'll animate along the wrapper's local z-axis
-    const distanceOffset = startLocal.distanceTo(surfaceLocal) - 2;
-    pinGroup.position.set(0, 0, distanceOffset);
-
-    // Create text label (country name)
-    const textCanvas = document.createElement('canvas');
-    const context = textCanvas.getContext('2d');
-    textCanvas.width = 256;
-    textCanvas.height = 64;
-
-    // Draw background
-    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    context.fillRect(0, 0, textCanvas.width, textCanvas.height);
-
-    // Draw text
-    context.font = 'bold 24px Arial';
-    context.fillStyle = 'white';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(countryName, textCanvas.width / 2, textCanvas.height / 2);
-
-    // Create texture from canvas
-    const texture = new THREE.CanvasTexture(textCanvas);
-
-    // Create sprite material
-    const spriteMaterial = new THREE.SpriteMaterial({ 
-        map: texture,
-        transparent: true
-    });
-
-    // Create sprite
-    const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(1, 0.25, 1);
-    sprite.position.z = 0.2;
-
-    // Add sprite to pin group
-    pinGroup.add(sprite);
-
-    // Finally, add the pin wrapper to the globe
-    globe.add(pinWrapper);
-
-    // Animate the pin falling
-    const duration = 1000;
-    const startTime = Date.now();
-
-    function animatePin() {
-        const elapsedTime = Date.now() - startTime;
-        const progress = Math.min(elapsedTime / duration, 1);
-        pinGroup.position.z = (1 - progress) * distanceOffset;
-        if (progress < 1) requestAnimationFrame(animatePin);
-    }
-    animatePin();
-
-    // Store the marker for replay
-    markers.push({
-        wrapper: pinWrapper,
-        object: pinGroup,
-        position: surfaceLocal.clone(),
-        index: markers.length
-    });
-
-    return pinWrapper;
-}
-
-// Function to replay journey
+// Function to replay journey through markers
 function replayJourney() {
     if (markers.length < 2 || isReplaying) return;
     
@@ -282,80 +577,110 @@ function replayJourney() {
     replayButton.textContent = 'Replaying...';
     replayButton.disabled = true;
     
-    // Save current globe rotation 
-    const originalRotation = {
-        x: globe.rotation.x,
-        y: globe.rotation.y,
-        z: globe.rotation.z
-    };
+    // Save current camera position and control state
+    const startCameraPosition = camera.position.clone();
+    const startControlsTarget = controls.target.clone();
+    const controlsEnabled = controls.enabled;
     
+    // Disable controls during replay
+    controls.enabled = false;
+    
+    // Visit each marker in sequence
     let currentIndex = 0;
     
-    function animateToNextPoint() {
-        if (currentIndex >= markers.length - 1) {
+    function visitNextMarker() {
+        if (currentIndex >= markers.length) {
             // Replay complete
             isReplaying = false;
             replayButton.textContent = 'Replay Journey';
             replayButton.disabled = false;
             
-            // Restore original rotation
-            globe.rotation.x = originalRotation.x;
-            globe.rotation.y = originalRotation.y;
-            globe.rotation.z = originalRotation.z;
+            // Return to original position
+            animateCameraPosition(startCameraPosition, new THREE.Vector3(0, 0, 0), () => {
+                controls.target.copy(startControlsTarget);
+                controls.enabled = controlsEnabled;
+            });
+            
             return;
         }
         
-        const currentMarker = markers[currentIndex];
-        const nextMarker = markers[currentIndex + 1];
+        const marker = markers[currentIndex];
         
         // Highlight current marker
-        const originalColor = currentMarker.object.children[0].material.color.clone();
-        currentMarker.object.children[0].material.color.set(0x00ff00);
+        if (marker.object) {
+            marker.object.children[0].material.color.set('green');
+        }
         
-        // Calculate target quaternion to see this location on the globe
-        const p1 = currentMarker.position.clone();
-        const p2 = nextMarker.position.clone();
-        
-        // Find the midpoint between the two points
-        const midPoint = p1.clone().add(p2).divideScalar(2).normalize().multiplyScalar(2);
-        
-        // Orient the globe so this midpoint is at the front (negative z-axis)
-        const targetQuaternion = new THREE.Quaternion().setFromUnitVectors(
-            new THREE.Vector3(0, 0, -1),
-            midPoint.clone().normalize()
+        // Calculate position to view the marker from
+        const globeRadius = threeGlobe.getGlobeRadius();
+        const phi = (90 - marker.lat) * Math.PI / 180;
+        const theta = (marker.lng + 180) * Math.PI / 180;
+        const markerPos = new THREE.Vector3(
+            -globeRadius * Math.sin(phi) * Math.sin(theta),
+            globeRadius * Math.cos(phi),
+            globeRadius * Math.sin(phi) * Math.cos(theta)
         );
         
-        const startQuaternion = globe.quaternion.clone();
-        const animationDuration = 1000; // 1 second
-        const startTime = Date.now();
+        // Calculate camera position to look at the marker
+        const distFromGlobe = globeRadius * 0.5; // Relatively close to the marker
+        const cameraPos = markerPos.clone().normalize().multiplyScalar(globeRadius + distFromGlobe);
         
-        function rotateStep() {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / animationDuration, 1);
-            
-            // Smoothly interpolate rotation using quaternions
-            THREE.Quaternion.slerp(
-                startQuaternion, 
-                targetQuaternion, 
-                globe.quaternion, 
-                progress
-            );
-            
-            if (progress < 1) {
-                requestAnimationFrame(rotateStep);
-            } else {
+        // Animate camera to look at marker
+        animateCameraPosition(cameraPos, markerPos, () => {
+            // After we reach the marker, wait a bit and then move on
+            setTimeout(() => {
                 // Reset marker color
-                currentMarker.object.children[0].material.color.copy(originalColor);
+                if (marker.object) {
+                    marker.object.children[0].material.color.set(marker.initialColor);
+                }
                 
                 // Move to next marker
                 currentIndex++;
-                setTimeout(animateToNextPoint, 500);
-            }
-        }
-        
-        rotateStep(); 
+                visitNextMarker();
+            }, 1000);
+        });
     }
     
-    // Start animation
-    animateToNextPoint();
+    // Start replay
+    visitNextMarker();
+}
+
+// Animate camera movement
+function animateCameraPosition(targetPos, lookAtPos, callback) {
+    const startPos = camera.position.clone();
+    const startTarget = controls.target.clone();
+    
+    const duration = 1000; // ms
+    const start = performance.now();
+    
+    function animate(time) {
+        const elapsed = time - start;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Use smooth easing
+        const easedProgress = easeInOutCubic(progress);
+        
+        // Update camera position
+        camera.position.lerpVectors(startPos, targetPos, easedProgress);
+        
+        // Update look-at target
+        controls.target.lerpVectors(startTarget, lookAtPos, easedProgress);
+        controls.update();
+        
+        // Update globe's point of view to match camera
+        threeGlobe.setPointOfView(camera);
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else if (callback) {
+            callback();
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+
+// Easing function
+function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }

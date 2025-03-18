@@ -5,7 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Globe Explorer</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Set up import map for ESM modules -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://esm.sh/three",
+          "three/": "https://esm.sh/three/",
+          "three-globe": "https://esm.sh/three-globe"
+        }
+      }
+    </script>
+    
     <style>
         /* Modal styles */
         .modal-overlay {
@@ -26,7 +37,7 @@
             padding: 20px;
             border-radius: 5px;
             max-width: 400px;
-            text-align: center;
+            text-align: center; 
         }
         
         .modal-content input {
