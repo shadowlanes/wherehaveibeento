@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 -(event.clientY / window.innerHeight) * 2 + 1
             );
             
-            // Create raycaster
+            // Create raycaster 
             const raycaster = new THREE.Raycaster();
             raycaster.setFromCamera(mouse, window.camera);
             
@@ -61,13 +61,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (intersects.length > 0) {
                 const point = intersects[0].point.clone();
-                const worldPosition = point.clone(); // Save world position for API call
                 
-                // Convert 3D point to lat/long with improved accuracy
+                // Convert 3D point to lat/long with improved accuracy,
+                // accounting for the globe's rotation
                 const coords = cartesianToLatLng(point);
+                
+                console.log(`Clicked at 3D point: ${point.x.toFixed(2)}, ${point.y.toFixed(2)}, ${point.z.toFixed(2)}`);
+                console.log(`Converted to lat/lng: ${coords.lat.toFixed(2)}, ${coords.lng.toFixed(2)}`);
                 
                 // Get country name based on coordinates
                 getCountryFromCoordinates(coords.lat, coords.lng).then(countryName => {
+                    console.log(`Identified country: ${countryName}`);
                     // Add pin with animation
                     addPin(point, countryName);
                 }).catch(error => {
@@ -89,17 +93,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Helper function to convert cartesian coordinates to lat/lng
-function cartesianToLatLng(point) {
-    // Normalize to the unit sphere first
-    const radius = 2; // Our globe radius
-    const normalized = point.clone().divideScalar(radius);
-    
-    // Calculate latitude: -90 to 90 degrees
-    const lat = 90 - (Math.acos(normalized.y) * 180 / Math.PI);
-    
-    // Calculate longitude: -180 to 180 degrees
-    let lng = Math.atan2(normalized.x, normalized.z) * 180 / Math.PI;
-    
+function cartesianToLatLng(worldPoint) {
+    // Transform worldPoint to the globe's local space
+    globe.updateMatrixWorld();
+    const inverseGlobeMatrix = new THREE.Matrix4().copy(globe.matrixWorld).invert();
+    const localPoint = worldPoint.clone().applyMatrix4(inverseGlobeMatrix);
+
+    // Assume the globe's radius is 2, with +Y as "north pole"
+    const radius = 2;
+    // Make sure we don't exceed radius
+    const normalizedY = Math.max(-radius, Math.min(radius, localPoint.y));
+
+    // Latitude: -90 (south pole) to +90 (north pole)
+    const lat = Math.asin(normalizedY / radius) * (180 / Math.PI);
+
+    // Longitude: -180 to +180
+    // Note the negative Z since typical lat/long expects zero at prime meridian along Z= -∞
+    const lng = Math.atan2(localPoint.x, -localPoint.z) * (180 / Math.PI);
+
     return { lat, lng };
 }
 
@@ -149,121 +160,116 @@ async function getCountryFromCoordinates(lat, lng) {
 }
 
 // Function to add an animated pin
-function addPin(position, countryName) {
+function addPin(worldPoint, countryName) {
+    // Transform the clicked point from world space to the globe's local space
+    globe.updateMatrixWorld();
+    const inverseGlobeMatrix = new THREE.Matrix4().copy(globe.matrixWorld).invert();
+    const localPoint = worldPoint.clone().applyMatrix4(inverseGlobeMatrix);
+
+    // Calculate surface and start positions in local space
+    const surfaceLocal = localPoint.clone().normalize().multiplyScalar(2);
+    const startLocal = localPoint.clone().normalize().multiplyScalar(3);
+
     // Create pin geometry
     const pinHeight = 0.3;
     const pinHeadRadius = 0.04;
     const pinColor = 0xff0000;
-    
+
     // Create pin head (sphere)
     const pinHead = new THREE.Mesh(
         new THREE.SphereGeometry(pinHeadRadius, 16, 16),
         new THREE.MeshBasicMaterial({ color: pinColor })
     );
-    
+
     // Create pin body (cylinder)
     const pinBody = new THREE.Mesh(
         new THREE.CylinderGeometry(0.01, 0.01, pinHeight, 8),
         new THREE.MeshBasicMaterial({ color: pinColor })
     );
-    
+
     // Position pin body
-    pinBody.position.y = -pinHeight/2;
-    
-    // Create pin group
+    pinBody.position.y = -pinHeight / 2;
+
     const pinGroup = new THREE.Group();
     pinGroup.add(pinHead);
     pinGroup.add(pinBody);
-    
-    // Calculate the normalized position on the globe surface
-    const surfacePosition = position.clone().normalize().multiplyScalar(2);
-    
-    // Calculate the pin start position for animation
-    const startPosition = position.clone().normalize().multiplyScalar(3);
-    
-    // Store the final surface position for the pin
-    pinGroup.userData.surfacePosition = surfacePosition.clone();
-    
-    // Create a wrapper object that will be attached to the globe
-    // This wrapper will maintain the pin's position relative to the globe
+
+    // Save final surface position in userData for reference
+    pinGroup.userData.surfacePosition = surfaceLocal.clone();
+
+    // Create a wrapper Object3D that's placed in the globe's local coordinates
     const pinWrapper = new THREE.Object3D();
-    pinWrapper.position.copy(surfacePosition);
-    
-    // Make the pin face outward from the center of the globe
-    const lookAtPosition = surfacePosition.clone().multiplyScalar(2);
-    pinWrapper.lookAt(lookAtPosition);
-    
+    pinWrapper.position.copy(surfaceLocal);
+
+    // Orient the pin so it faces outward
+    const lookAtLocal = surfaceLocal.clone().multiplyScalar(2);
+    pinWrapper.lookAt(lookAtLocal);
+
     // Add the pin group to the wrapper
     pinWrapper.add(pinGroup);
-    
-    // Set initial position for animation
-    pinGroup.position.set(0, 0, startPosition.distanceTo(surfacePosition) - 2);
-    
-    // Create text label for country name
+
+    // Start position offset in local coords
+    // We'll animate along the wrapper's local z-axis
+    const distanceOffset = startLocal.distanceTo(surfaceLocal) - 2;
+    pinGroup.position.set(0, 0, distanceOffset);
+
+    // Create text label (country name)
     const textCanvas = document.createElement('canvas');
     const context = textCanvas.getContext('2d');
     textCanvas.width = 256;
     textCanvas.height = 64;
-    
+
     // Draw background
     context.fillStyle = 'rgba(0, 0, 0, 0.7)';
     context.fillRect(0, 0, textCanvas.width, textCanvas.height);
-    
+
     // Draw text
     context.font = 'bold 24px Arial';
     context.fillStyle = 'white';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(countryName, textCanvas.width / 2, textCanvas.height / 2);
-    
+
     // Create texture from canvas
     const texture = new THREE.CanvasTexture(textCanvas);
-    
+
     // Create sprite material
     const spriteMaterial = new THREE.SpriteMaterial({ 
         map: texture,
         transparent: true
     });
-    
+
     // Create sprite
     const sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(1, 0.25, 1);
     sprite.position.z = 0.2;
-    
+
     // Add sprite to pin group
     pinGroup.add(sprite);
-    
-    // KEY CHANGE: Add the wrapper to the globe instead of directly to the scene
+
+    // Finally, add the pin wrapper to the globe
     globe.add(pinWrapper);
-    
-    // Animate pin falling
-    const duration = 1000; // ms
+
+    // Animate the pin falling
+    const duration = 1000;
     const startTime = Date.now();
-    
+
     function animatePin() {
         const elapsedTime = Date.now() - startTime;
         const progress = Math.min(elapsedTime / duration, 1);
-        
-        // Animate the pin along the z-axis of its local coordinate system
-        pinGroup.position.z = (1 - progress) * (startPosition.distanceTo(surfacePosition) - 2);
-        
-        // Continue animation until complete
-        if (progress < 1) {
-            requestAnimationFrame(animatePin);
-        }
+        pinGroup.position.z = (1 - progress) * distanceOffset;
+        if (progress < 1) requestAnimationFrame(animatePin);
     }
-    
-    // Start animation
     animatePin();
-    
-    // Save marker and its position for replay
+
+    // Store the marker for replay
     markers.push({
         wrapper: pinWrapper,
         object: pinGroup,
-        position: surfacePosition.clone(),
+        position: surfaceLocal.clone(),
         index: markers.length
     });
-    
+
     return pinWrapper;
 }
 
@@ -276,7 +282,7 @@ function replayJourney() {
     replayButton.textContent = 'Replaying...';
     replayButton.disabled = true;
     
-    // Save current globe rotation
+    // Save current globe rotation 
     const originalRotation = {
         x: globe.rotation.x,
         y: globe.rotation.y,
@@ -347,7 +353,7 @@ function replayJourney() {
             }
         }
         
-        rotateStep();
+        rotateStep(); 
     }
     
     // Start animation
