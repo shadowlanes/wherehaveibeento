@@ -1,0 +1,200 @@
+[
+    {
+        "name": "United States",
+        "code": "US",
+        "flag": "🇺🇸",
+        "continent": "North America",
+        "visits": [
+            {
+                "date": "30/05/2025 - 29/06/2025",
+                "startDate": "30/05/2025",
+                "endDate": "29/06/2025",
+                "month": 5,
+                "year": 2025,
+                "places": "Currently traveling"
+            }
+        ],
+        "coordinates": {
+            "lat": 37.0902,
+            "lng": -95.7129
+        }
+    },
+    {
+        "name": "United Kingdom",
+        "code": "GB",
+        "flag": "🇬🇧",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "18/05/2025 - 30/05/2025",
+                "startDate": "18/05/2025",
+                "endDate": "30/05/2025",
+                "month": 5,
+                "year": 2025
+            }
+        ],
+        "coordinates": {
+            "lat": 55.3781,
+            "lng": -3.4360
+        }
+    },
+    {
+        "name": "Egypt",
+        "code": "EG",
+        "flag": "🇪🇬",
+        "continent": "Africa",
+        "visits": [
+            {
+                "date": "17/11/2023 - 25/11/2023",
+                "startDate": "17/11/2023",
+                "endDate": "25/11/2023",
+                "month": 11,
+                "year": 2023
+            },
+            {
+                "date": "16/12/2024 - 24/12/2024",
+                "startDate": "16/12/2024",
+                "endDate": "24/12/2024",
+                "month": 12,
+                "year": 2024
+            }
+        ],
+        "coordinates": {
+            "lat": 26.8206,
+            "lng": 30.8025
+        }
+    },
+    {
+        "name": "Bahrain",
+        "code": "BH",
+        "flag": "🇧🇭",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "29/02/2024 - 02/03/2024",
+                "startDate": "29/02/2024",
+                "endDate": "02/03/2024",
+                "month": 2,
+                "year": 2024
+            }
+        ],
+        "coordinates": {
+            "lat": 25.9304,
+            "lng": 50.6378
+        }
+    },
+    {
+        "name": "South Africa",
+        "code": "ZA",
+        "flag": "🇿🇦",
+        "continent": "Africa",
+        "visits": [
+            {
+                "date": "10/06/2010 - 20/06/2010",
+                "startDate": "10/06/2010",
+                "endDate": "20/06/2010",
+                "month": 6,
+                "year": 2010
+            }
+        ],
+        "coordinates": {
+            "lat": -30.5595,
+            "lng": 22.9375
+        }
+    },
+    {
+        "name": "France",
+        "code": "FR",
+        "flag": "🇫🇷",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "15/03/2011 - 17/03/2011",
+                "startDate": "15/03/2011",
+                "endDate": "17/03/2011",
+                "month": 3,
+                "year": 2011
+            }
+        ],
+        "coordinates": {
+            "lat": 46.2276,
+            "lng": 2.2137
+        }
+    },
+    {
+        "name": "Belgium",
+        "code": "BE",
+        "flag": "🇧🇪",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "18/03/2011 - 20/03/2011",
+                "startDate": "18/03/2011",
+                "endDate": "20/03/2011",
+                "month": 3,
+                "year": 2011
+            }
+        ],
+        "coordinates": {
+            "lat": 50.5039,
+            "lng": 4.4699
+        }
+    },
+    {
+        "name": "Thailand",
+        "code": "TH",
+        "flag": "🇹🇭",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "15/05/2023 - 23/05/2023",
+                "startDate": "15/05/2023",
+                "endDate": "23/05/2023",
+                "month": 5,
+                "year": 2023
+            }
+        ],
+        "coordinates": {
+            "lat": 15.8700,
+            "lng": 100.9925
+        }
+    },
+    {
+        "name": "Qatar",
+        "code": "QA",
+        "flag": "🇶🇦",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "05/12/2022 - 18/12/2022",
+                "startDate": "05/12/2022",
+                "endDate": "18/12/2022",
+                "month": 12,
+                "year": 2022
+            }
+        ],
+        "coordinates": {
+            "lat": 25.3548,
+            "lng": 51.1839
+        }
+    },
+    {
+        "name": "Ireland",
+        "code": "IE",
+        "flag": "🇮🇪",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "15/03/2024 - 18/03/2024",
+                "startDate": "15/03/2024",
+                "endDate": "18/03/2024",
+                "month": 3,
+                "year": 2024
+            }
+        ],
+        "coordinates": {
+            "lat": 53.1424,
+            "lng": -7.6921
+        }
+    }
+]
