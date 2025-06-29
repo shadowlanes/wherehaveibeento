@@ -142,20 +142,17 @@ body, html {
 
 #total-stats p {
     margin: 12px 0;
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
     font-family: 'Space Grotesk', sans-serif;
     letter-spacing: -0.2px;
+    text-align: center;
+    line-height: 1.4;
 }
 
-#total-countries {
+#travel-summary {
     color: #ffce54;
     text-shadow: 0 0 8px rgba(255, 206, 84, 0.4);
-}
-
-#total-visits {
-    color: #ff9f43;
-    text-shadow: 0 0 8px rgba(255, 159, 67, 0.4);
 }
 
 /* Tooltip Styles */

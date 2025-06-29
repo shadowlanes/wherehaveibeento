@@ -9,6 +9,7 @@ const countriesTravelled = [
         name: "Maldives",
         code: "MV",
         flag: "🇲🇻",
+        continent: "Asia",
         visits: [
             { date: "23/12/2017 - 26/12/2017", startDate: "23/12/2017", endDate: "26/12/2017", month: 12, year: 2017 }
         ],
@@ -18,6 +19,7 @@ const countriesTravelled = [
         name: "Sri Lanka",
         code: "LK",
         flag: "🇱🇰",
+        continent: "Asia",
         visits: [
             { date: "31/12/2019 - 05/01/2020", startDate: "31/12/2019", endDate: "05/01/2020", month: 12, year: 2019 }
         ],
@@ -27,6 +29,7 @@ const countriesTravelled = [
         name: "Thailand",
         code: "TH",
         flag: "🇹🇭",
+        continent: "Asia",
         visits: [
             { date: "12/02/2020 - 16/02/2020", startDate: "12/02/2020", endDate: "16/02/2020", month: 2, year: 2020, places: "Phuket, Krabi" }
         ],
@@ -36,6 +39,7 @@ const countriesTravelled = [
         name: "Egypt",
         code: "EG",
         flag: "🇪🇬",
+        continent: "Africa",
         visits: [
             { date: "17/11/2023 - 25/11/2023", startDate: "17/11/2023", endDate: "25/11/2023", month: 11, year: 2023, places: "Cairo, Aswan, Luxor" }
         ],
@@ -45,6 +49,7 @@ const countriesTravelled = [
         name: "Bahrain",
         code: "BH",
         flag: "🇧🇭",
+        continent: "Asia",
         visits: [
             { date: "29/02/2024 - 02/03/2024", startDate: "29/02/2024", endDate: "02/03/2024", month: 2, year: 2024 }
         ],
@@ -54,6 +59,7 @@ const countriesTravelled = [
         name: "Jordan",
         code: "JO",
         flag: "🇯🇴",
+        continent: "Asia",
         visits: [
             { date: "08/03/2024 - 12/03/2024", startDate: "08/03/2024", endDate: "12/03/2024", month: 3, year: 2024, places: "Amman, Petra" }
         ],
@@ -63,6 +69,7 @@ const countriesTravelled = [
         name: "Georgia",
         code: "GE",
         flag: "🇬🇪",
+        continent: "Asia",
         visits: [
             { date: "24/07/2024 - 01/08/2024", startDate: "24/07/2024", endDate: "01/08/2024", month: 7, year: 2024, places: "Kutaisi, Mestia, Tbilisi" }
         ],
@@ -72,6 +79,7 @@ const countriesTravelled = [
         name: "Azerbaijan",
         code: "AZ",
         flag: "🇦🇿",
+        continent: "Asia",
         visits: [
             { date: "01/08/2024 - 05/08/2024", startDate: "01/08/2024", endDate: "05/08/2024", month: 8, year: 2024 }
         ],
@@ -81,6 +89,7 @@ const countriesTravelled = [
         name: "Oman",
         code: "OM",
         flag: "🇴🇲",
+        continent: "Asia",
         visits: [
             { date: "27/08/2024 - 29/08/2024", startDate: "27/08/2024", endDate: "29/08/2024", month: 8, year: 2024 }
         ],
@@ -90,6 +99,7 @@ const countriesTravelled = [
         name: "Singapore",
         code: "SG",
         flag: "🇸🇬",
+        continent: "Asia",
         visits: [
             { date: "14/09/2024 - 04/10/2024", startDate: "14/09/2024", endDate: "04/10/2024", month: 9, year: 2024 }
         ],
@@ -99,6 +109,7 @@ const countriesTravelled = [
         name: "Armenia",
         code: "AM",
         flag: "🇦🇲",
+        continent: "Asia",
         visits: [
             { date: "03/05/2025 - 07/05/2025", startDate: "03/05/2025", endDate: "07/05/2025", month: 5, year: 2025 }
         ],
@@ -183,6 +194,19 @@ class TravelData {
         return country.visits.map(visit => 
             `${this.getMonthName(visit.month)} ${visit.year}`
         ).join(', ');
+    }
+
+    // Get number of unique continents visited
+    static getTotalContinents() {
+        const continents = new Set(countriesTravelled.map(country => country.continent));
+        return continents.size;
+    }
+
+    // Get total days across all countries
+    static getTotalDaysAllCountries() {
+        return countriesTravelled.reduce((total, country) => {
+            return total + this.getTotalDays(country);
+        }, 0);
     }
 }
 

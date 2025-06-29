@@ -51,14 +51,15 @@ class WhereHaveIBeenTo {
 
     setupSidebar() {
         const countriesList = document.getElementById('countries-list');
-        const totalCountries = document.getElementById('total-countries');
-        const totalVisits = document.getElementById('total-visits');
+        const travelSummary = document.getElementById('travel-summary');
 
         const countries = TravelData.getCountries();
+        const totalCountries = TravelData.getTotalCountries();
+        const totalContinents = TravelData.getTotalContinents();
+        const totalDays = TravelData.getTotalDaysAllCountries();
         
-        // Update totals first (at the top)
-        totalCountries.textContent = `Countries: ${TravelData.getTotalCountries()}`;
-        totalVisits.textContent = `Total Visits: ${TravelData.getTotalVisits()}`;
+        // Update travel summary
+        travelSummary.textContent = `Visited ${totalCountries} Countries across ${totalContinents} Continents for ${totalDays} days`;
 
         // Clear and populate countries list
         countriesList.innerHTML = '';
@@ -67,7 +68,7 @@ class WhereHaveIBeenTo {
             const countryItem = document.createElement('div');
             countryItem.className = 'country-item';
             
-            const totalDays = TravelData.getTotalDays(country);
+            const countryDays = TravelData.getTotalDays(country);
             const visitInfo = TravelData.getVisitInfo(country);
             
             countryItem.innerHTML = `
@@ -77,7 +78,7 @@ class WhereHaveIBeenTo {
                 </div>
                 <div class="country-stats">
                     <span class="visits">${country.visits.length} visit${country.visits.length > 1 ? 's' : ''}</span>
-                    <span class="days">${totalDays} day${totalDays > 1 ? 's' : ''}</span>
+                    <span class="days">${countryDays} day${countryDays > 1 ? 's' : ''}</span>
                     <span class="visit-dates">${visitInfo}</span>
                 </div>
             `;
@@ -96,9 +97,6 @@ class WhereHaveIBeenTo {
             countryItem.style.cursor = 'pointer';
             countriesList.appendChild(countryItem);
         });
-
-        totalCountries.textContent = `Countries: ${TravelData.getTotalCountries()}`;
-        totalVisits.textContent = `Total Visits: ${TravelData.getTotalVisits()}`;
     }
 }
 
