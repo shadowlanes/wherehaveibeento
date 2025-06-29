@@ -32,8 +32,8 @@ class GlobeVisualization {
             .showAtmosphere(true)
             .atmosphereColor('lightskyblue')
             .atmosphereAltitude(0.2)
-            .width(this.container.clientWidth)
-            .height(this.container.clientHeight)
+            .width(this.getResponsiveWidth())
+            .height(this.getResponsiveHeight())
             // Points for visited countries
             .pointsData(TravelData.getCountries())
             .pointLat(d => d.coordinates.lat)
@@ -70,10 +70,29 @@ class GlobeVisualization {
 
         // Add resize listener
         window.addEventListener('resize', () => {
-            this.globe
-                .width(this.container.clientWidth)
-                .height(this.container.clientHeight);
+            this.resizeGlobe();
         });
+        
+        // Initial resize to handle mobile
+        setTimeout(() => this.resizeGlobe(), 100);
+    }
+
+    getResponsiveWidth() {
+        const isMobile = window.innerWidth <= 768;
+        return isMobile ? window.innerWidth : this.container.clientWidth;
+    }
+
+    getResponsiveHeight() {
+        const isMobile = window.innerWidth <= 768;
+        return isMobile ? 
+            Math.min(window.innerHeight * 0.6, 400) : 
+            this.container.clientHeight;
+    }
+
+    resizeGlobe() {
+        this.globe
+            .width(this.getResponsiveWidth())
+            .height(this.getResponsiveHeight());
     }
 
     showTooltip(point) {
