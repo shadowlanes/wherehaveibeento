@@ -69,7 +69,7 @@ const countriesTravelled = [
         name: "Georgia",
         code: "GE",
         flag: "🇬🇪",
-        continent: "Asia",
+        continent: "Europe",
         visits: [
             { date: "24/07/2024 - 01/08/2024", startDate: "24/07/2024", endDate: "01/08/2024", month: 7, year: 2024, places: "Kutaisi, Mestia, Tbilisi" }
         ],
