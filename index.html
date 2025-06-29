@@ -3,157 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Globe Explorer</title>
+    <title>Where Have I Been To?</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Set up import map for ESM modules -->
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://esm.sh/three",
-          "three/": "https://esm.sh/three/",
-          "three-globe": "https://esm.sh/three-globe"
-        }
-      }
-    </script>
-    
-    <style>
-        /* Modal styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000; 
-        }
-        
-        .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            max-width: 400px;
-            text-align: center; 
-        }
-        
-        .modal-content input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            box-sizing: border-box;
-        }
-        
-        .modal-content button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        
-        .welcome-message {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            color: white;
-            z-index: 100;
-            font-size: 18px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 5px;
-        }
-        
-        .replay-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            z-index: 100;
-        }
-        
-        #globe-container {
-            display: none; /* Initially hidden */
-        }
-        
-        .controls-info {
-            display: none; /* Initially hidden */
-        }
-    </style>
 </head>
 <body>
-    <!-- Username Modal -->
-    <div id="username-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Welcome to World Globe Explorer</h2>
-            <p>Please enter your username to continue:</p>
-            <input type="text" id="username-input" placeholder="Enter username">
-            <button id="submit-username">Continue</button>
+    <div id="globe-container"></div>
+    
+    <div id="sidebar">
+        <h2>Countries Visited</h2>
+        <div id="countries-list"></div>
+        <div id="total-stats">
+            <p id="total-countries">Countries: 0</p>
+            <p id="total-visits">Total Visits: 0</p>
         </div>
     </div>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <!-- Load Globe.gl -->
+    <script src="//cdn.jsdelivr.net/npm/globe.gl"></script>
     
-    <div id="welcome-message" class="welcome-message" style="display: none;"></div>
-    <div id="globe-container"></div>
-    <div class="controls-info">
-        <h3>Controls</h3>
-        <p>Mouse: Click and drag to rotate</p>
-        <p>Scroll: Zoom in/out</p>
-        <p>Arrow Keys: Rotate the globe</p> 
-        <p>Right Click: Mark a location</p>
-    </div>
-    
-    <button id="replay-button" class="replay-button" style="display: none;">Replay Journey</button>
-    
-    <!-- Handle user authentication and initialization -->
-    <script>
-        // Check if username exists in localStorage when page loads
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log("Page loaded!");
-            
-            // Check if username exists in localStorage
-            if (localStorage.getItem('globeExplorerUsername')) {
-                // Hide the username modal immediately
-                document.getElementById('username-modal').style.display = 'none';
-                document.getElementById('globe-container').style.display = 'block';
-                document.querySelector('.controls-info').style.display = 'block';
-                document.getElementById('replay-button').style.display = 'block';
-            } else {
-                // Show username modal
-                document.getElementById('submit-username').addEventListener('click', function() {
-                    const username = document.getElementById('username-input').value.trim();
-                    if (username) {
-                        localStorage.setItem('globeExplorerUsername', username);
-                        document.getElementById('username-modal').style.opacity = 0;
-                        setTimeout(() => {
-                            document.getElementById('username-modal').style.display = 'none';
-                            document.getElementById('globe-container').style.display = 'block';
-                            document.querySelector('.controls-info').style.display = 'block';
-                            document.getElementById('replay-button').style.display = 'block';
-                        }, 500);
-                    }
-                });
-                
-                // Allow Enter key to submit
-                document.getElementById('username-input').addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        document.getElementById('submit-username').click();
-                    }
-                });
-            }
-        });
-    </script>
-    
-    <!-- Load the main script as a module -->
-    <script type="module" src="scripts/main.js"></script>
+    <!-- Our modules -->
+    <script src="scripts/data.js"></script>
+    <script src="scripts/visualization.js"></script>
+    <script src="scripts/main.js"></script>
 </body>
 </html>
