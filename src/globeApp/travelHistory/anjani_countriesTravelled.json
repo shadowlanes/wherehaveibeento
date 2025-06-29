@@ -38,5 +38,26 @@
             "lat": 14.0583,
             "lng": 108.2772
         }
+    },
+    {
+        "name": "India",
+        "code": "IN",
+        "flag": "🇮🇳",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "01/01/1992 - 31/12/2023",
+                "startDate": "01/01/1992",
+                "endDate": "31/12/2023",
+                "month": 1,
+                "year": 1988,
+                "stayType": "stay",
+                "places": "Born and raised"
+            }
+        ],
+        "coordinates": {
+            "lat": 20.5937,
+            "lng": 78.9629
+        }
     }
 ]
