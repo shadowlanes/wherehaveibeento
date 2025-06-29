@@ -111,12 +111,19 @@ class WhereHaveIBeenTo {
             countryItem.innerHTML = `
                 <div class="country-header">
                     <span class="flag">${country.flag}</span>
-                    <span class="country-name">${country.name}</span>
+                    <div class="country-info">
+                        <span class="country-name">${country.name}</span>
+                        <span class="continent">${country.continent}</span>
+                    </div>
                 </div>
                 <div class="country-stats">
-                    <span class="visits">${country.visits.length} visit${country.visits.length > 1 ? 's' : ''}</span>
-                    <span class="days">${countryDays} day${countryDays > 1 ? 's' : ''}</span>
-                    <span class="visit-dates">${visitInfo}</span>
+                    <div class="stats-left">
+                        <span class="visits">${country.visits.length} visit${country.visits.length > 1 ? 's' : ''}</span>
+                        <span class="days">${countryDays} day${countryDays > 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="stats-right">
+                        <span class="visit-dates">${visitInfo}</span>
+                    </div>
                 </div>
             `;
             
