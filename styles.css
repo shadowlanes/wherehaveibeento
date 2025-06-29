@@ -55,8 +55,8 @@ body, html {
 .country-item {
     background: linear-gradient(135deg, rgba(255, 159, 67, 0.1) 0%, rgba(255, 206, 84, 0.08) 100%);
     border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
     border-left: 3px solid #ff9f43;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
@@ -73,12 +73,23 @@ body, html {
 .country-header {
     display: flex;
     align-items: center;
-    margin-bottom: 6px;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    gap: 8px;
 }
 
 .flag {
     font-size: 1.2em;
     margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.country-info {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
 }
 
 .country-name {
@@ -87,14 +98,35 @@ body, html {
     font-weight: 600;
     font-family: 'Space Grotesk', sans-serif;
     letter-spacing: -0.2px;
+    line-height: 1.2;
+    flex-shrink: 0;
+}
+
+.continent {
+    color: #a8a6c1;
+    font-size: 0.7em;
+    font-weight: 400;
+    font-family: 'Poppins', sans-serif;
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+
+.visit-dates {
+    color: #a8a6c1;
+    font-weight: 400;
+    font-size: 0.75em;
+    font-family: 'Poppins', sans-serif;
+    flex-shrink: 0;
+    text-align: right;
 }
 
 .country-stats {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.8em;
     font-family: 'Poppins', sans-serif;
+    margin-left: 32px; /* Align with country name (flag width + margin) */
 }
 
 .visits {
@@ -105,12 +137,6 @@ body, html {
 .days {
     color: #ff9f43;
     font-weight: 500;
-}
-
-.visit-dates {
-    color: #a8a6c1;
-    font-weight: 400;
-    font-size: 0.9em;
 }
 
 #dynamic-header {
@@ -283,12 +309,30 @@ body, html {
         margin-bottom: 6px;
     }
     
-    .country-header .country-name {
+    .country-header {
+        margin-bottom: 3px;
+        gap: 6px;
+    }
+    
+    .country-info {
+        gap: 4px;
+    }
+    
+    .country-name {
         font-size: 0.95em;
+    }
+    
+    .continent {
+        font-size: 0.65em;
+    }
+    
+    .visit-dates {
+        font-size: 0.7em;
     }
     
     .country-stats {
         font-size: 0.75em;
+        margin-left: 28px;
     }
     
     .flag {
@@ -324,13 +368,30 @@ body, html {
         border-radius: 6px;
     }
     
-    .country-header .country-name {
+    .country-header {
+        margin-bottom: 2px;
+        gap: 4px;
+    }
+    
+    .country-info {
+        gap: 3px;
+    }
+    
+    .country-name {
         font-size: 0.9em;
+    }
+    
+    .continent {
+        font-size: 0.6em;
+    }
+    
+    .visit-dates {
+        font-size: 0.65em;
     }
     
     .country-stats {
         font-size: 0.7em;
-        gap: 1px;
+        margin-left: 24px;
     }
     
     .flag {
