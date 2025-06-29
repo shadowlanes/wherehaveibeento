@@ -84,9 +84,14 @@ class GlobeVisualization {
 
     getResponsiveHeight() {
         const isMobile = window.innerWidth <= 768;
-        return isMobile ? 
-            Math.min(window.innerHeight * 0.6, 400) : 
-            this.container.clientHeight;
+        if (isMobile) {
+            // For mobile, use 50vh (half viewport) but with minimum height
+            const mobileHeight = window.innerWidth <= 480 ? 
+                Math.max(window.innerHeight * 0.45, 280) : 
+                Math.max(window.innerHeight * 0.5, 300);
+            return mobileHeight;
+        }
+        return this.container.clientHeight;
     }
 
     resizeGlobe() {
