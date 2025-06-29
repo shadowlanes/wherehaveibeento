@@ -4,6 +4,8 @@ console.log('Loading main.js...');
 class WhereHaveIBeenTo {
     constructor() {
         this.globe = null;
+        this.currentStatementIndex = 0;
+        this.statementInterval = null;
         this.init();
     }
 
@@ -57,9 +59,44 @@ class WhereHaveIBeenTo {
         const totalCountries = TravelData.getTotalCountries();
         const totalContinents = TravelData.getTotalContinents();
         const totalDays = TravelData.getTotalDaysAllCountries();
+        const yearsSinceFirstTrip = TravelData.getYearsSinceFirstTrip();
         
-        // Update travel summary
-        travelSummary.textContent = `Been to ${totalCountries} countries across ${totalContinents} continents for ${totalDays} days`;
+        // Create alternating statements
+        const statements = [
+            `Explored ${totalCountries} countries so far`,
+            `Wandered across ${totalContinents} continents`,
+            `Spent ${totalDays} days away from home`,
+            `Been chasing sunsets for ${yearsSinceFirstTrip} years`
+        ];
+
+        // Function to update the statement with drop animation effect
+        const updateStatement = () => {
+            // Add drop-out animation
+            travelSummary.classList.add('drop-out');
+            
+            // After drop-out animation completes, change text and drop-in
+            setTimeout(() => {
+                // Update text
+                travelSummary.textContent = statements[this.currentStatementIndex];
+                this.currentStatementIndex = (this.currentStatementIndex + 1) % statements.length;
+                
+                // Remove drop-out and add drop-in animation
+                travelSummary.classList.remove('drop-out');
+                travelSummary.classList.add('drop-in');
+                
+                // Remove drop-in class after animation completes
+                setTimeout(() => {
+                    travelSummary.classList.remove('drop-in');
+                }, 500); // Duration of drop-in animation
+                
+            }, 500); // Duration of drop-out animation
+        };
+
+        // Initialize with first statement
+        updateStatement();
+
+        // Set up interval to rotate statements every 4 seconds (giving time for animations)
+        this.statementInterval = setInterval(updateStatement, 4000);
 
         // Clear and populate countries list
         countriesList.innerHTML = '';
@@ -97,6 +134,14 @@ class WhereHaveIBeenTo {
             countryItem.style.cursor = 'pointer';
             countriesList.appendChild(countryItem);
         });
+    }
+
+    // Cleanup method to clear intervals
+    destroy() {
+        if (this.statementInterval) {
+            clearInterval(this.statementInterval);
+            this.statementInterval = null;
+        }
     }
 }
 

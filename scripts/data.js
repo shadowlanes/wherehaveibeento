@@ -208,6 +208,19 @@ class TravelData {
             return total + this.getTotalDays(country);
         }, 0);
     }
+
+    // Get years since first trip
+    static getYearsSinceFirstTrip() {
+        if (countriesTravelled.length === 0) return 0;
+        
+        // Find the earliest trip year
+        let earliestYear = Math.min(...countriesTravelled.flatMap(country => 
+            country.visits.map(visit => visit.year)
+        ));
+        
+        const currentYear = new Date().getFullYear();
+        return currentYear - earliestYear;
+    }
 }
 
 // Export for use in other modules
