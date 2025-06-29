@@ -221,6 +221,29 @@ class TravelData {
         const currentYear = new Date().getFullYear();
         return currentYear - earliestYear;
     }
+
+    // Get most recent visit date as a comparable value for sorting
+    static getMostRecentVisitDate(country) {
+        if (!country.visits || country.visits.length === 0) return new Date(0); // Very old date for countries with no visits
+        
+        // Find the most recent visit
+        const mostRecent = country.visits.reduce((latest, visit) => {
+            const visitDate = new Date(visit.startDate.split('/').reverse().join('-'));
+            const latestDate = new Date(latest.startDate.split('/').reverse().join('-'));
+            return visitDate > latestDate ? visit : latest;
+        });
+        
+        return new Date(mostRecent.startDate.split('/').reverse().join('-'));
+    }
+
+    // Get countries sorted by most recent visit first
+    static getCountriesSortedByRecentVisit() {
+        return [...countriesTravelled].sort((a, b) => {
+            const dateA = this.getMostRecentVisitDate(a);
+            const dateB = this.getMostRecentVisitDate(b);
+            return dateB - dateA; // Most recent first (descending order)
+        });
+    }
 }
 
 // Export for use in other modules
