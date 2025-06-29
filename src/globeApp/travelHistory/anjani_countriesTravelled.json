@@ -1,0 +1,40 @@
+[
+    {
+        "name": "United Arab Emirates",
+        "code": "AE",
+        "flag": "🇦🇪",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "10/01/2025 - 23/01/2025",
+                "startDate": "10/01/2025",
+                "endDate": "23/01/2025",
+                "month": 1,
+                "year": 2025
+            }
+        ],
+        "coordinates": {
+            "lat": 23.4241,
+            "lng": 53.8478
+        }
+    },
+    {
+        "name": "Vietnam",
+        "code": "VN",
+        "flag": "🇻🇳",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "06/06/2025 - 15/06/2025",
+                "startDate": "06/06/2025",
+                "endDate": "15/06/2025",
+                "month": 6,
+                "year": 2025
+            }
+        ],
+        "coordinates": {
+            "lat": 14.0583,
+            "lng": 108.2772
+        }
+    }
+]
