@@ -11,7 +11,8 @@
                 "endDate": "25/06/2022",
                 "month": 6,
                 "year": 2022,
-                "places": "Paris, Nice, Lyon"
+                "places": "Paris, Nice, Lyon",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -31,7 +32,8 @@
                 "endDate": "20/08/2022",
                 "month": 8,
                 "year": 2022,
-                "places": "Madrid, Barcelona, Seville"
+                "places": "Madrid, Barcelona, Seville",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -51,7 +53,8 @@
                 "endDate": "15/09/2023",
                 "month": 9,
                 "year": 2023,
-                "places": "Rome, Florence, Venice"
+                "places": "Rome, Florence, Venice",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -71,7 +74,8 @@
                 "endDate": "28/04/2024",
                 "month": 4,
                 "year": 2024,
-                "places": "Berlin, Munich, Hamburg"
+                "places": "Berlin, Munich, Hamburg",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -91,7 +95,8 @@
                 "endDate": "22/07/2024",
                 "month": 7,
                 "year": 2024,
-                "places": "London, Edinburgh, Cardiff"
+                "places": "London, Edinburgh, Cardiff",
+                "stayType": "trip"
             }
         ],
         "coordinates": {

@@ -11,7 +11,8 @@
                 "endDate": "29/06/2025",
                 "month": 5,
                 "year": 2025,
-                "places": "Currently traveling"
+                "places": "Currently traveling",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -30,7 +31,8 @@
                 "startDate": "18/05/2025",
                 "endDate": "30/05/2025",
                 "month": 5,
-                "year": 2025
+                "year": 2025,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -49,14 +51,16 @@
                 "startDate": "17/11/2023",
                 "endDate": "25/11/2023",
                 "month": 11,
-                "year": 2023
+                "year": 2023,
+                "stayType": "trip"
             },
             {
                 "date": "16/12/2024 - 24/12/2024",
                 "startDate": "16/12/2024",
                 "endDate": "24/12/2024",
                 "month": 12,
-                "year": 2024
+                "year": 2024,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -75,7 +79,8 @@
                 "startDate": "29/02/2024",
                 "endDate": "02/03/2024",
                 "month": 2,
-                "year": 2024
+                "year": 2024,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -94,7 +99,8 @@
                 "startDate": "10/06/2010",
                 "endDate": "20/06/2010",
                 "month": 6,
-                "year": 2010
+                "year": 2010,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -113,7 +119,8 @@
                 "startDate": "15/03/2011",
                 "endDate": "17/03/2011",
                 "month": 3,
-                "year": 2011
+                "year": 2011,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -132,7 +139,8 @@
                 "startDate": "18/03/2011",
                 "endDate": "20/03/2011",
                 "month": 3,
-                "year": 2011
+                "year": 2011,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -151,7 +159,8 @@
                 "startDate": "15/05/2023",
                 "endDate": "23/05/2023",
                 "month": 5,
-                "year": 2023
+                "year": 2023,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -170,7 +179,8 @@
                 "startDate": "05/12/2022",
                 "endDate": "18/12/2022",
                 "month": 12,
-                "year": 2022
+                "year": 2022,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -189,7 +199,8 @@
                 "startDate": "15/03/2024",
                 "endDate": "18/03/2024",
                 "month": 3,
-                "year": 2024
+                "year": 2024,
+                "stayType": "trip"
             }
         ],
         "coordinates": {

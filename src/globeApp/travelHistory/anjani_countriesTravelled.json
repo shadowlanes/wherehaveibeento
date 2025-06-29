@@ -10,7 +10,8 @@
                 "startDate": "10/01/2025",
                 "endDate": "23/01/2025",
                 "month": 1,
-                "year": 2025
+                "year": 2025,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -29,7 +30,8 @@
                 "startDate": "06/06/2025",
                 "endDate": "15/06/2025",
                 "month": 6,
-                "year": 2025
+                "year": 2025,
+                "stayType": "trip"
             }
         ],
         "coordinates": {

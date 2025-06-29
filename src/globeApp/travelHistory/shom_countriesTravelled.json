@@ -10,7 +10,8 @@
                 "startDate": "23/12/2017",
                 "endDate": "26/12/2017",
                 "month": 12,
-                "year": 2017
+                "year": 2017,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -29,7 +30,8 @@
                 "startDate": "31/12/2019",
                 "endDate": "05/01/2020",
                 "month": 12,
-                "year": 2019
+                "year": 2019,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -49,7 +51,8 @@
                 "endDate": "16/02/2020",
                 "month": 2,
                 "year": 2020,
-                "places": "Phuket, Krabi"
+                "places": "Phuket, Krabi",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -69,7 +72,8 @@
                 "endDate": "25/11/2023",
                 "month": 11,
                 "year": 2023,
-                "places": "Cairo, Aswan, Luxor"
+                "places": "Cairo, Aswan, Luxor",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -88,7 +92,8 @@
                 "startDate": "29/02/2024",
                 "endDate": "02/03/2024",
                 "month": 2,
-                "year": 2024
+                "year": 2024,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -108,7 +113,8 @@
                 "endDate": "12/03/2024",
                 "month": 3,
                 "year": 2024,
-                "places": "Amman, Petra"
+                "places": "Amman, Petra",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -128,7 +134,8 @@
                 "endDate": "01/08/2024",
                 "month": 7,
                 "year": 2024,
-                "places": "Kutaisi, Mestia, Tbilisi"
+                "places": "Kutaisi, Mestia, Tbilisi",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -147,7 +154,8 @@
                 "startDate": "01/08/2024",
                 "endDate": "05/08/2024",
                 "month": 8,
-                "year": 2024
+                "year": 2024,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -166,7 +174,8 @@
                 "startDate": "27/08/2024",
                 "endDate": "29/08/2024",
                 "month": 8,
-                "year": 2024
+                "year": 2024,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -185,7 +194,8 @@
                 "startDate": "14/09/2024",
                 "endDate": "04/10/2024",
                 "month": 9,
-                "year": 2024
+                "year": 2024,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -204,7 +214,8 @@
                 "startDate": "03/05/2025",
                 "endDate": "07/05/2025",
                 "month": 5,
-                "year": 2025
+                "year": 2025,
+                "stayType": "trip"
             }
         ],
         "coordinates": {
