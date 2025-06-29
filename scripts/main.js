@@ -59,7 +59,7 @@ class WhereHaveIBeenTo {
         const totalDays = TravelData.getTotalDaysAllCountries();
         
         // Update travel summary
-        travelSummary.textContent = `Visited ${totalCountries} Countries across ${totalContinents} Continents for ${totalDays} days`;
+        travelSummary.textContent = `Been to ${totalCountries} countries across ${totalContinents} continents for ${totalDays} days`;
 
         // Clear and populate countries list
         countriesList.innerHTML = '';
