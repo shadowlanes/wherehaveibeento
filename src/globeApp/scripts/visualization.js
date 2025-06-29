@@ -38,12 +38,18 @@ class GlobeVisualization {
             .pointsData(TravelData.getCountries())
             .pointLat(d => d.coordinates.lat)
             .pointLng(d => d.coordinates.lng)
-            .pointColor(() => '#ff9f43')
+            .pointColor(d => {
+                // Check if country has any stay visits
+                const hasStays = d.visits.some(visit => visit.stayType === 'stay');
+                return hasStays ? '#4a90e2' : '#ff9f43'; // Blue for stays, orange for trips
+            })
             .pointAltitude(0.02)
             .pointRadius(0.8)
             .pointLabel(d => {
-                const mostRecentVisit = TravelData.getMostRecentVisit(d);
-                return `<b>${d.name}</b><br/>Last Visit: ${mostRecentVisit.date}<br/>Total Visits: ${d.visits.length}`;
+                const mostRecentVisit = TravelData.getMostRecentVisit(d, true); // Include stays in most recent check
+                const hasStays = d.visits.some(visit => visit.stayType === 'stay');
+                const stayText = hasStays ? ' (Lived here)' : '';
+                return `<b>${d.name}${stayText}</b><br/>Last Visit: ${mostRecentVisit.date}<br/>Total Visits: ${d.visits.length}`;
             })
             // Rings for glowing effect
             .ringsData(TravelData.getCountries())
@@ -52,7 +58,11 @@ class GlobeVisualization {
             .ringMaxRadius(2)
             .ringPropagationSpeed(1)
             .ringRepeatPeriod(2000)
-            .ringColor(() => ['#ff9f43', '#ffce54'])
+            .ringColor(d => {
+                // Match ring color to point color
+                const hasStays = d.visits.some(visit => visit.stayType === 'stay');
+                return hasStays ? ['#4a90e2', '#7bb3f0'] : ['#ff9f43', '#ffce54'];
+            })
             // Event handlers
             .onPointHover((point, prevPoint) => {
                 this.container.style.cursor = point ? 'pointer' : 'auto';
@@ -102,8 +112,10 @@ class GlobeVisualization {
 
     showTooltip(point) {
         if (point) {
-            const mostRecentVisit = TravelData.getMostRecentVisit(point);
-            this.tooltip.innerHTML = `<strong>${point.name}</strong><br>Last Visit: ${mostRecentVisit.date}<br>Total Visits: ${point.visits.length}`;
+            const mostRecentVisit = TravelData.getMostRecentVisit(point, true); // Include stays
+            const hasStays = point.visits.some(visit => visit.stayType === 'stay');
+            const stayText = hasStays ? ' (Lived here)' : '';
+            this.tooltip.innerHTML = `<strong>${point.name}${stayText}</strong><br>Last Visit: ${mostRecentVisit.date}<br>Total Visits: ${point.visits.length}`;
             this.tooltip.style.display = 'block';
         }
     }

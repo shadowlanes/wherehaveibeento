@@ -76,6 +76,10 @@ class WhereHaveIBeenTo {
         const totalDays = TravelData.getTotalDaysAllCountries();
         const yearsSinceFirstTrip = TravelData.getYearsSinceFirstTrip();
         
+        // Check if user has any stays to determine if we should show stay info
+        const hasStays = TravelData.hasAnyStays();
+        const totalStayCountries = hasStays ? TravelData.getTotalStayCountries() : 0;
+        
         // Create alternating statements
         const statements = [
             `Explored ${totalCountries} countries so far`,
@@ -83,6 +87,11 @@ class WhereHaveIBeenTo {
             `Spent ${totalDays} days away from home`,
             `Been chasing sunsets for ${yearsSinceFirstTrip} years`
         ];
+        
+        // Add stay statement if user has any stays
+        if (hasStays) {
+            statements.push(`Lived in ${totalStayCountries} countr${totalStayCountries === 1 ? 'y' : 'ies'}`);
+        }
 
         // Function to update the statement with drop animation effect
         const updateStatement = () => {
@@ -122,6 +131,29 @@ class WhereHaveIBeenTo {
             
             const countryDays = TravelData.getTotalDays(country);
             const visitInfo = TravelData.getVisitInfo(country);
+            const hasStayVisits = country.visits.some(visit => visit.stayType === 'stay');
+            const stayInfo = hasStayVisits ? TravelData.getStayInfo(country) : '';
+            
+            // Count trip and stay visits separately
+            const tripVisits = country.visits.filter(visit => visit.stayType === 'trip').length;
+            const stayVisits = country.visits.filter(visit => visit.stayType === 'stay').length;
+            
+            let visitsDisplay = '';
+            if (tripVisits > 0 && stayVisits > 0) {
+                visitsDisplay = `${tripVisits} trip${tripVisits > 1 ? 's' : ''}, ${stayVisits} stay${stayVisits > 1 ? 's' : ''}`;
+            } else if (tripVisits > 0) {
+                visitsDisplay = `${tripVisits} visit${tripVisits > 1 ? 's' : ''}`;
+            } else if (stayVisits > 0) {
+                visitsDisplay = `${stayVisits} stay${stayVisits > 1 ? 's' : ''}`;
+            }
+            
+            // Build the date display
+            let dateDisplay = visitInfo;
+            if (hasStayVisits && visitInfo && stayInfo) {
+                dateDisplay = `Trips: ${visitInfo} | Stays: ${stayInfo}`;
+            } else if (hasStayVisits && stayInfo) {
+                dateDisplay = `Stays: ${stayInfo}`;
+            }
             
             countryItem.innerHTML = `
                 <div class="country-header">
@@ -130,10 +162,10 @@ class WhereHaveIBeenTo {
                         <span class="country-name">${country.name}</span>
                         <span class="continent">${country.continent}</span>
                     </div>
-                    <span class="visit-dates">${visitInfo}</span>
+                    <span class="visit-dates">${dateDisplay}</span>
                 </div>
                 <div class="country-stats">
-                    <span class="visits">${country.visits.length} visit${country.visits.length > 1 ? 's' : ''}</span>
+                    <span class="visits">${visitsDisplay}</span>
                     <span class="days">${countryDays} day${countryDays > 1 ? 's' : ''}</span>
                 </div>
             `;

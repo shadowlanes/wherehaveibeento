@@ -222,5 +222,47 @@
             "lat": 40.0691,
             "lng": 45.0382
         }
+    },
+    {
+        "name": "India",
+        "code": "IN",
+        "flag": "🇮🇳",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "01/01/1988 - 31/12/2023",
+                "startDate": "01/01/1988",
+                "endDate": "31/12/2023",
+                "month": 1,
+                "year": 1988,
+                "stayType": "stay",
+                "places": "Born and raised"
+            }
+        ],
+        "coordinates": {
+            "lat": 20.5937,
+            "lng": 78.9629
+        }
+    },
+    {
+        "name": "United Arab Emirates",
+        "code": "AE",
+        "flag": "🇦🇪",
+        "continent": "Asia",
+        "visits": [
+            {
+                "date": "01/01/2023 - 29/06/2025",
+                "startDate": "01/01/2023",
+                "endDate": "29/06/2025",
+                "month": 1,
+                "year": 2023,
+                "stayType": "stay",
+                "places": "Current residence"
+            }
+        ],
+        "coordinates": {
+            "lat": 23.4241,
+            "lng": 53.8478
+        }
     }
 ]

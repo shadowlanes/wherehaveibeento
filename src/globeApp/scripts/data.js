@@ -75,11 +75,54 @@ class TravelData {
     }
     
     static getTotalCountries() {
-        return countriesTravelled.length;
+        // Count only countries with trip visits
+        return countriesTravelled.filter(country => 
+            country.visits.some(visit => visit.stayType === 'trip')
+        ).length;
     }
     
     static getTotalVisits() {
-        return countriesTravelled.reduce((total, country) => total + country.visits.length, 0);
+        // Count only trip visits
+        return countriesTravelled.reduce((total, country) => {
+            const tripVisits = country.visits.filter(visit => visit.stayType === 'trip');
+            return total + tripVisits.length;
+        }, 0);
+    }
+    
+    static getTotalStayCountries() {
+        // Count countries where user has lived (stay visits)
+        return countriesTravelled.filter(country => 
+            country.visits.some(visit => visit.stayType === 'stay')
+        ).length;
+    }
+    
+    static getTotalStays() {
+        // Count only stay visits
+        return countriesTravelled.reduce((total, country) => {
+            const stayVisits = country.visits.filter(visit => visit.stayType === 'stay');
+            return total + stayVisits.length;
+        }, 0);
+    }
+    
+    static getCountriesWithTrips() {
+        // Get countries that have trip visits
+        return countriesTravelled.filter(country => 
+            country.visits.some(visit => visit.stayType === 'trip')
+        );
+    }
+    
+    static getCountriesWithStays() {
+        // Get countries that have stay visits
+        return countriesTravelled.filter(country => 
+            country.visits.some(visit => visit.stayType === 'stay')
+        );
+    }
+    
+    static hasAnyStays() {
+        // Check if user has any stay visits
+        return countriesTravelled.some(country => 
+            country.visits.some(visit => visit.stayType === 'stay')
+        );
     }
     
     static getMostRecentVisit(country) {
@@ -117,14 +160,32 @@ class TravelData {
         }
     }
 
-    // Calculate total days spent in a country
-    static getTotalDays(country) {
+    // Calculate total days spent in a country (trips only by default)
+    static getTotalDays(country, includeStays = false) {
         if (!country.visits || country.visits.length === 0) return 0;
         
-        return country.visits.reduce((totalDays, visit) => {
+        const visitsToCount = includeStays ? 
+            country.visits : 
+            country.visits.filter(visit => visit.stayType === 'trip');
+        
+        return visitsToCount.reduce((totalDays, visit) => {
             const startDate = new Date(visit.startDate.split('/').reverse().join('-'));
             const endDate = new Date(visit.endDate.split('/').reverse().join('-'));
             const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end days
+            return totalDays + days;
+        }, 0);
+    }
+    
+    // Calculate total days spent in stays only
+    static getTotalStayDays(country) {
+        if (!country.visits || country.visits.length === 0) return 0;
+        
+        const stayVisits = country.visits.filter(visit => visit.stayType === 'stay');
+        
+        return stayVisits.reduce((totalDays, visit) => {
+            const startDate = new Date(visit.startDate.split('/').reverse().join('-'));
+            const endDate = new Date(visit.endDate.split('/').reverse().join('-'));
+            const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
             return totalDays + days;
         }, 0);
     }
@@ -136,47 +197,86 @@ class TravelData {
         return months[monthNumber - 1];
     }
 
-    // Get formatted visit info (Month Year)
-    static getVisitInfo(country) {
+    // Get formatted visit info (Month Year) - trips only by default
+    static getVisitInfo(country, includeStays = false) {
         if (!country.visits || country.visits.length === 0) return '';
         
-        return country.visits.map(visit => 
+        const visitsToShow = includeStays ? 
+            country.visits : 
+            country.visits.filter(visit => visit.stayType === 'trip');
+        
+        return visitsToShow.map(visit => 
+            `${this.getMonthName(visit.month)} ${visit.year}`
+        ).join(', ');
+    }
+    
+    // Get formatted stay info (Month Year)
+    static getStayInfo(country) {
+        if (!country.visits || country.visits.length === 0) return '';
+        
+        const stayVisits = country.visits.filter(visit => visit.stayType === 'stay');
+        
+        return stayVisits.map(visit => 
             `${this.getMonthName(visit.month)} ${visit.year}`
         ).join(', ');
     }
 
-    // Get number of unique continents visited
+    // Get number of unique continents visited (trips only)
     static getTotalContinents() {
-        const continents = new Set(countriesTravelled.map(country => country.continent));
+        const countriesWithTrips = this.getCountriesWithTrips();
+        const continents = new Set(countriesWithTrips.map(country => country.continent));
+        return continents.size;
+    }
+    
+    // Get number of unique continents lived in (stays only)
+    static getTotalContinentsWithStays() {
+        const countriesWithStays = this.getCountriesWithStays();
+        const continents = new Set(countriesWithStays.map(country => country.continent));
         return continents.size;
     }
 
-    // Get total days across all countries
-    static getTotalDaysAllCountries() {
+    // Get total days across all countries (trips only by default)
+    static getTotalDaysAllCountries(includeStays = false) {
         return countriesTravelled.reduce((total, country) => {
-            return total + this.getTotalDays(country);
+            return total + this.getTotalDays(country, includeStays);
+        }, 0);
+    }
+    
+    // Get total days across all stay countries
+    static getTotalStayDaysAllCountries() {
+        return countriesTravelled.reduce((total, country) => {
+            return total + this.getTotalStayDays(country);
         }, 0);
     }
 
-    // Get years since first trip
+    // Get years since first trip (trips only)
     static getYearsSinceFirstTrip() {
-        if (countriesTravelled.length === 0) return 0;
+        const countriesWithTrips = this.getCountriesWithTrips();
+        if (countriesWithTrips.length === 0) return 0;
         
         // Find the earliest trip year
-        let earliestYear = Math.min(...countriesTravelled.flatMap(country => 
-            country.visits.map(visit => visit.year)
+        let earliestYear = Math.min(...countriesWithTrips.flatMap(country => 
+            country.visits
+                .filter(visit => visit.stayType === 'trip')
+                .map(visit => visit.year)
         ));
         
         const currentYear = new Date().getFullYear();
         return currentYear - earliestYear;
     }
 
-    // Get most recent visit date as a comparable value for sorting
-    static getMostRecentVisitDate(country) {
+    // Get most recent visit date as a comparable value for sorting (trips only by default)
+    static getMostRecentVisitDate(country, includeStays = false) {
         if (!country.visits || country.visits.length === 0) return new Date(0); // Very old date for countries with no visits
         
+        const visitsToCheck = includeStays ? 
+            country.visits : 
+            country.visits.filter(visit => visit.stayType === 'trip');
+            
+        if (visitsToCheck.length === 0) return new Date(0);
+        
         // Find the most recent visit
-        const mostRecent = country.visits.reduce((latest, visit) => {
+        const mostRecent = visitsToCheck.reduce((latest, visit) => {
             const visitDate = new Date(visit.startDate.split('/').reverse().join('-'));
             const latestDate = new Date(latest.startDate.split('/').reverse().join('-'));
             return visitDate > latestDate ? visit : latest;
@@ -185,11 +285,15 @@ class TravelData {
         return new Date(mostRecent.startDate.split('/').reverse().join('-'));
     }
 
-    // Get countries sorted by most recent visit first
-    static getCountriesSortedByRecentVisit() {
-        return [...countriesTravelled].sort((a, b) => {
-            const dateA = this.getMostRecentVisitDate(a);
-            const dateB = this.getMostRecentVisitDate(b);
+    // Get countries sorted by most recent visit first (trips only by default)
+    static getCountriesSortedByRecentVisit(includeStays = false) {
+        const countriesToSort = includeStays ? 
+            countriesTravelled : 
+            this.getCountriesWithTrips();
+            
+        return [...countriesToSort].sort((a, b) => {
+            const dateA = this.getMostRecentVisitDate(a, includeStays);
+            const dateB = this.getMostRecentVisitDate(b, includeStays);
             return dateB - dateA; // Most recent first (descending order)
         });
     }
