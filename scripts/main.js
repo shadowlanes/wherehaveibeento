@@ -55,7 +55,7 @@ class WhereHaveIBeenTo {
         const countriesList = document.getElementById('countries-list');
         const travelSummary = document.getElementById('travel-summary');
 
-        const countries = TravelData.getCountries();
+        const countries = TravelData.getCountriesSortedByRecentVisit();
         const totalCountries = TravelData.getTotalCountries();
         const totalContinents = TravelData.getTotalContinents();
         const totalDays = TravelData.getTotalDaysAllCountries();
