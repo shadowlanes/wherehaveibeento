@@ -64,6 +64,10 @@ class GlobeVisualization {
 
         console.log('Globe initialized successfully');
 
+        // Enable auto-rotate
+        this.globe.controls().autoRotate = true;
+        this.globe.controls().autoRotateSpeed = 2; // Adjust speed as needed (positive = counterclockwise)
+
         // Add resize listener
         window.addEventListener('resize', () => {
             this.globe
