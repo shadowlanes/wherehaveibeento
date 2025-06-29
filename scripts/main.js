@@ -55,6 +55,12 @@ class WhereHaveIBeenTo {
         const totalVisits = document.getElementById('total-visits');
 
         const countries = TravelData.getCountries();
+        
+        // Update totals first (at the top)
+        totalCountries.textContent = `Countries: ${TravelData.getTotalCountries()}`;
+        totalVisits.textContent = `Total Visits: ${TravelData.getTotalVisits()}`;
+
+        // Clear and populate countries list
         countriesList.innerHTML = '';
 
         countries.forEach(country => {

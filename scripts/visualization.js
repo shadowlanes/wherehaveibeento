@@ -66,7 +66,7 @@ class GlobeVisualization {
 
         // Enable auto-rotate
         this.globe.controls().autoRotate = true;
-        this.globe.controls().autoRotateSpeed = 2; // Adjust speed as needed (positive = counterclockwise)
+        this.globe.controls().autoRotateSpeed = 1; // Adjust speed as needed (positive = counterclockwise)
 
         // Add resize listener
         window.addEventListener('resize', () => {
