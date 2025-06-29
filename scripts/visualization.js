@@ -38,7 +38,7 @@ class GlobeVisualization {
             .pointsData(TravelData.getCountries())
             .pointLat(d => d.coordinates.lat)
             .pointLng(d => d.coordinates.lng)
-            .pointColor(() => '#00ff00')
+            .pointColor(() => '#ff9f43')
             .pointAltitude(0.02)
             .pointRadius(0.8)
             .pointLabel(d => {
@@ -52,7 +52,7 @@ class GlobeVisualization {
             .ringMaxRadius(2)
             .ringPropagationSpeed(1)
             .ringRepeatPeriod(2000)
-            .ringColor(() => ['#00ff00', '#004400'])
+            .ringColor(() => ['#ff9f43', '#ffce54'])
             // Event handlers
             .onPointHover((point, prevPoint) => {
                 this.container.style.cursor = point ? 'pointer' : 'auto';

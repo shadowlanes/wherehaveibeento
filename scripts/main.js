@@ -67,14 +67,19 @@ class WhereHaveIBeenTo {
             const countryItem = document.createElement('div');
             countryItem.className = 'country-item';
             
-            // Create detailed visit information
-            const allVisits = TravelData.getAllVisitsSorted(country);
-            const visitsList = allVisits.map(visit => visit.date).join(', ');
+            const totalDays = TravelData.getTotalDays(country);
+            const visitInfo = TravelData.getVisitInfo(country);
             
             countryItem.innerHTML = `
-                <strong>${country.name}</strong><br>
-                <small>Visits: ${country.visits.length}</small><br>
-                <small class="visits-list">${visitsList}</small>
+                <div class="country-header">
+                    <span class="flag">${country.flag}</span>
+                    <span class="country-name">${country.name}</span>
+                </div>
+                <div class="country-stats">
+                    <span class="visits">${country.visits.length} visit${country.visits.length > 1 ? 's' : ''}</span>
+                    <span class="days">${totalDays} day${totalDays > 1 ? 's' : ''}</span>
+                    <span class="visit-dates">${visitInfo}</span>
+                </div>
             `;
             
             // Add click handler to focus on country
