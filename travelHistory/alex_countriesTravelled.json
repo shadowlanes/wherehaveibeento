@@ -1,0 +1,102 @@
+[
+    {
+        "name": "France",
+        "code": "FR",
+        "flag": "🇫🇷",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "15/06/2022 - 25/06/2022",
+                "startDate": "15/06/2022",
+                "endDate": "25/06/2022",
+                "month": 6,
+                "year": 2022,
+                "places": "Paris, Nice, Lyon"
+            }
+        ],
+        "coordinates": {
+            "lat": 46.2276,
+            "lng": 2.2137
+        }
+    },
+    {
+        "name": "Spain",
+        "code": "ES",
+        "flag": "🇪🇸",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "10/08/2022 - 20/08/2022",
+                "startDate": "10/08/2022",
+                "endDate": "20/08/2022",
+                "month": 8,
+                "year": 2022,
+                "places": "Madrid, Barcelona, Seville"
+            }
+        ],
+        "coordinates": {
+            "lat": 40.4637,
+            "lng": -3.7492
+        }
+    },
+    {
+        "name": "Italy",
+        "code": "IT",
+        "flag": "🇮🇹",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "05/09/2023 - 15/09/2023",
+                "startDate": "05/09/2023",
+                "endDate": "15/09/2023",
+                "month": 9,
+                "year": 2023,
+                "places": "Rome, Florence, Venice"
+            }
+        ],
+        "coordinates": {
+            "lat": 41.8719,
+            "lng": 12.5674
+        }
+    },
+    {
+        "name": "Germany",
+        "code": "DE",
+        "flag": "🇩🇪",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "20/04/2024 - 28/04/2024",
+                "startDate": "20/04/2024",
+                "endDate": "28/04/2024",
+                "month": 4,
+                "year": 2024,
+                "places": "Berlin, Munich, Hamburg"
+            }
+        ],
+        "coordinates": {
+            "lat": 51.1657,
+            "lng": 10.4515
+        }
+    },
+    {
+        "name": "United Kingdom",
+        "code": "GB",
+        "flag": "🇬🇧",
+        "continent": "Europe",
+        "visits": [
+            {
+                "date": "12/07/2024 - 22/07/2024",
+                "startDate": "12/07/2024",
+                "endDate": "22/07/2024",
+                "month": 7,
+                "year": 2024,
+                "places": "London, Edinburgh, Cardiff"
+            }
+        ],
+        "coordinates": {
+            "lat": 55.3781,
+            "lng": -3.4360
+        }
+    }
+]

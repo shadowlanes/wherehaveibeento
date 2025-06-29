@@ -19,14 +19,29 @@ class WhereHaveIBeenTo {
     }
 
     start() {
-        // Wait for all libraries to load
-        this.waitForLibraries().then(() => {
+        // Load travel data first, then wait for libraries
+        this.loadTravelData().then(() => {
+            return this.waitForLibraries();
+        }).then(() => {
             // Initialize globe visualization
             this.globe = new GlobeVisualization('globe-container');
 
             // Setup sidebar
             this.setupSidebar();
+        }).catch(error => {
+            console.error('Failed to start application:', error);
         });
+    }
+
+    async loadTravelData() {
+        try {
+            console.log('Loading travel data...');
+            await TravelData.loadTravelData();
+            console.log('Travel data loaded successfully');
+        } catch (error) {
+            console.error('Failed to load travel data:', error);
+            throw error;
+        }
     }
 
     waitForLibraries() {
