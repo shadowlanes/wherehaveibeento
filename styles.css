@@ -113,7 +113,7 @@ body, html {
     font-size: 0.9em;
 }
 
-#total-stats {
+#dynamic-header {
     font-weight: bold;
     margin-bottom: 8px;
     color: #4CAF50;
@@ -131,7 +131,7 @@ body, html {
     margin-right: 5px;
 }
 
-#total-stats {
+#dynamic-header {
     background: linear-gradient(135deg, rgba(255, 159, 67, 0.15) 0%, rgba(255, 206, 84, 0.1) 100%);
     border-radius: 12px;
     padding: 20px;
@@ -140,7 +140,7 @@ body, html {
     box-shadow: 0 4px 15px rgba(255, 159, 67, 0.1);
 }
 
-#total-stats p {
+#dynamic-header p {
     margin: 12px 0;
     font-size: 1.1em;
     font-weight: 600;
@@ -198,6 +198,37 @@ body, html {
     stroke-width: 0.5px !important;
 }
 
+/* Animations for dynamic header text changes */
+@keyframes dropOut {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(25px) scale(0.95);
+        opacity: 0;
+    }
+}
+
+@keyframes dropIn {
+    0% {
+        transform: translateY(-25px) scale(0.95);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.drop-out {
+    animation: dropOut 0.5s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+.drop-in {
+    animation: dropIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     body, html {
@@ -228,11 +259,11 @@ body, html {
         margin-bottom: 20px;
     }
     
-    #total-stats {
+    #dynamic-header {
         margin-bottom: 20px;
     }
     
-    #total-stats p {
+    #dynamic-header p {
         font-size: 1em;
         line-height: 1.3;
     }
@@ -272,7 +303,7 @@ body, html {
         margin-bottom: 15px;
     }
     
-    #total-stats p {
+    #dynamic-header p {
         font-size: 0.9em;
         margin: 8px 0;
     }
