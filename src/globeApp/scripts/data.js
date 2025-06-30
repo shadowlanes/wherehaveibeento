@@ -128,11 +128,8 @@ class TravelData {
     static getMostRecentVisit(country) {
         if (!country.visits || country.visits.length === 0) return null;
         
-        // Sort visits by year and month to get the most recent
-        const sortedVisits = country.visits.sort((a, b) => {
-            if (a.year !== b.year) return b.year - a.year;
-            return b.month - a.month;
-        });
+        // Sort visits by startDate to get the most recent
+        const sortedVisits = [...country.visits].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
         
         return sortedVisits[0];
     }
@@ -141,10 +138,7 @@ class TravelData {
         if (!country.visits || country.visits.length === 0) return [];
         
         // Sort visits chronologically (oldest first)
-        return country.visits.sort((a, b) => {
-            if (a.year !== b.year) return a.year - b.year;
-            return a.month - b.month;
-        });
+        return [...country.visits].sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
     }
     
     // Add a new country (for future use)
@@ -169,8 +163,8 @@ class TravelData {
             country.visits.filter(visit => visit.stayType === 'trip');
         
         return visitsToCount.reduce((totalDays, visit) => {
-            const startDate = new Date(visit.startDate.split('/').reverse().join('-'));
-            const endDate = new Date(visit.endDate.split('/').reverse().join('-'));
+            const startDate = new Date(visit.startDate);
+            const endDate = new Date(visit.endDate);
             const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end days
             return totalDays + days;
         }, 0);
@@ -183,8 +177,8 @@ class TravelData {
         const stayVisits = country.visits.filter(visit => visit.stayType === 'stay');
         
         return stayVisits.reduce((totalDays, visit) => {
-            const startDate = new Date(visit.startDate.split('/').reverse().join('-'));
-            const endDate = new Date(visit.endDate.split('/').reverse().join('-'));
+            const startDate = new Date(visit.startDate);
+            const endDate = new Date(visit.endDate);
             const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
             return totalDays + days;
         }, 0);
@@ -205,9 +199,10 @@ class TravelData {
             country.visits : 
             country.visits.filter(visit => visit.stayType === 'trip');
         
-        return visitsToShow.map(visit => 
-            `${this.getMonthName(visit.month)} ${visit.year}`
-        ).join(', ');
+        return visitsToShow.map(visit => {
+            const date = new Date(visit.startDate);
+            return `${this.getMonthName(date.getUTCMonth() + 1)} ${date.getUTCFullYear()}`;
+        }).join(', ');
     }
     
     // Get formatted stay info (Month Year)
@@ -216,9 +211,10 @@ class TravelData {
         
         const stayVisits = country.visits.filter(visit => visit.stayType === 'stay');
         
-        return stayVisits.map(visit => 
-            `${this.getMonthName(visit.month)} ${visit.year}`
-        ).join(', ');
+        return stayVisits.map(visit => {
+            const date = new Date(visit.startDate);
+            return `${this.getMonthName(date.getUTCMonth() + 1)} ${date.getUTCFullYear()}`;
+        }).join(', ');
     }
 
     // Get number of unique continents visited (trips only)
@@ -258,7 +254,7 @@ class TravelData {
         let earliestYear = Math.min(...countriesWithTrips.flatMap(country => 
             country.visits
                 .filter(visit => visit.stayType === 'trip')
-                .map(visit => visit.year)
+                .map(visit => new Date(visit.startDate).getUTCFullYear())
         ));
         
         const currentYear = new Date().getFullYear();
@@ -277,12 +273,12 @@ class TravelData {
         
         // Find the most recent visit
         const mostRecent = visitsToCheck.reduce((latest, visit) => {
-            const visitDate = new Date(visit.startDate.split('/').reverse().join('-'));
-            const latestDate = new Date(latest.startDate.split('/').reverse().join('-'));
+            const visitDate = new Date(visit.startDate);
+            const latestDate = new Date(latest.startDate);
             return visitDate > latestDate ? visit : latest;
         });
         
-        return new Date(mostRecent.startDate.split('/').reverse().join('-'));
+        return new Date(mostRecent.startDate);
     }
 
     // Get countries sorted by most recent visit first (trips only by default)
@@ -300,6 +296,10 @@ class TravelData {
 }
 
 // Export for use in other modules
+window.TravelData = TravelData;
+window.countriesTravelled = countriesTravelled;
+
+console.log('TravelData class created and exported to window');
 window.TravelData = TravelData;
 window.countriesTravelled = countriesTravelled;
 

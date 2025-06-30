@@ -6,11 +6,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "10/01/2025 - 23/01/2025",
-                "startDate": "10/01/2025",
-                "endDate": "23/01/2025",
-                "month": 1,
-                "year": 2025,
+                "startDate": "2025-01-10",
+                "endDate": "2025-01-23",
                 "stayType": "trip"
             }
         ],
@@ -26,11 +23,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "06/06/2025 - 15/06/2025",
-                "startDate": "06/06/2025",
-                "endDate": "15/06/2025",
-                "month": 6,
-                "year": 2025,
+                "startDate": "2025-06-06",
+                "endDate": "2025-06-15",
                 "stayType": "trip"
             }
         ],
@@ -46,11 +40,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "01/01/1992 - 31/12/2023",
-                "startDate": "01/01/1992",
-                "endDate": "31/12/2023",
-                "month": 1,
-                "year": 1988,
+                "startDate": "1992-01-01",
+                "endDate": "2023-12-31",
                 "stayType": "stay",
                 "places": "Born and raised"
             }

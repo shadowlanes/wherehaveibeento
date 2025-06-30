@@ -6,11 +6,8 @@
         "continent": "Europe",
         "visits": [
             {
-                "date": "15/06/2022 - 25/06/2022",
-                "startDate": "15/06/2022",
-                "endDate": "25/06/2022",
-                "month": 6,
-                "year": 2022,
+                "startDate": "2022-06-15",
+                "endDate": "2022-06-25",
                 "places": "Paris, Nice, Lyon",
                 "stayType": "trip"
             }
@@ -27,11 +24,8 @@
         "continent": "Europe",
         "visits": [
             {
-                "date": "10/08/2022 - 20/08/2022",
-                "startDate": "10/08/2022",
-                "endDate": "20/08/2022",
-                "month": 8,
-                "year": 2022,
+                "startDate": "2022-08-10",
+                "endDate": "2022-08-20",
                 "places": "Madrid, Barcelona, Seville",
                 "stayType": "trip"
             }
@@ -48,11 +42,8 @@
         "continent": "Europe",
         "visits": [
             {
-                "date": "05/09/2023 - 15/09/2023",
-                "startDate": "05/09/2023",
-                "endDate": "15/09/2023",
-                "month": 9,
-                "year": 2023,
+                "startDate": "2023-09-05",
+                "endDate": "2023-09-15",
                 "places": "Rome, Florence, Venice",
                 "stayType": "trip"
             }
@@ -69,11 +60,8 @@
         "continent": "Europe",
         "visits": [
             {
-                "date": "20/04/2024 - 28/04/2024",
-                "startDate": "20/04/2024",
-                "endDate": "28/04/2024",
-                "month": 4,
-                "year": 2024,
+                "startDate": "2024-04-20",
+                "endDate": "2024-04-28",
                 "places": "Berlin, Munich, Hamburg",
                 "stayType": "trip"
             }
@@ -90,11 +78,8 @@
         "continent": "Europe",
         "visits": [
             {
-                "date": "12/07/2024 - 22/07/2024",
-                "startDate": "12/07/2024",
-                "endDate": "22/07/2024",
-                "month": 7,
-                "year": 2024,
+                "startDate": "2024-07-12",
+                "endDate": "2024-07-22",
                 "places": "London, Edinburgh, Cardiff",
                 "stayType": "trip"
             }

@@ -6,11 +6,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "23/12/2017 - 26/12/2017",
-                "startDate": "23/12/2017",
-                "endDate": "26/12/2017",
-                "month": 12,
-                "year": 2017,
+                "startDate": "2017-12-23",
+                "endDate": "2017-12-26",
                 "stayType": "trip"
             }
         ],
@@ -26,11 +23,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "31/12/2019 - 05/01/2020",
-                "startDate": "31/12/2019",
-                "endDate": "05/01/2020",
-                "month": 12,
-                "year": 2019,
+                "startDate": "2019-12-31",
+                "endDate": "2020-01-05",
                 "stayType": "trip"
             }
         ],
@@ -46,11 +40,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "12/02/2020 - 16/02/2020",
-                "startDate": "12/02/2020",
-                "endDate": "16/02/2020",
-                "month": 2,
-                "year": 2020,
+                "startDate": "2020-02-12",
+                "endDate": "2020-02-16",
                 "places": "Phuket, Krabi",
                 "stayType": "trip"
             }
@@ -67,11 +58,8 @@
         "continent": "Africa",
         "visits": [
             {
-                "date": "17/11/2023 - 25/11/2023",
-                "startDate": "17/11/2023",
-                "endDate": "25/11/2023",
-                "month": 11,
-                "year": 2023,
+                "startDate": "2023-11-17",
+                "endDate": "2023-11-25",
                 "places": "Cairo, Aswan, Luxor",
                 "stayType": "trip"
             }
@@ -88,11 +76,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "29/02/2024 - 02/03/2024",
-                "startDate": "29/02/2024",
-                "endDate": "02/03/2024",
-                "month": 2,
-                "year": 2024,
+                "startDate": "2024-02-29",
+                "endDate": "2024-03-02",
                 "stayType": "trip"
             }
         ],
@@ -108,11 +93,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "08/03/2024 - 12/03/2024",
-                "startDate": "08/03/2024",
-                "endDate": "12/03/2024",
-                "month": 3,
-                "year": 2024,
+                "startDate": "2024-03-08",
+                "endDate": "2024-03-12",
                 "places": "Amman, Petra",
                 "stayType": "trip"
             }
@@ -129,11 +111,8 @@
         "continent": "Europe",
         "visits": [
             {
-                "date": "24/07/2024 - 01/08/2024",
-                "startDate": "24/07/2024",
-                "endDate": "01/08/2024",
-                "month": 7,
-                "year": 2024,
+                "startDate": "2024-07-24",
+                "endDate": "2024-08-01",
                 "places": "Kutaisi, Mestia, Tbilisi",
                 "stayType": "trip"
             }
@@ -150,11 +129,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "01/08/2024 - 05/08/2024",
-                "startDate": "01/08/2024",
-                "endDate": "05/08/2024",
-                "month": 8,
-                "year": 2024,
+                "startDate": "2024-08-01",
+                "endDate": "2024-08-05",
                 "stayType": "trip"
             }
         ],
@@ -170,11 +146,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "27/08/2024 - 29/08/2024",
-                "startDate": "27/08/2024",
-                "endDate": "29/08/2024",
-                "month": 8,
-                "year": 2024,
+                "startDate": "2024-08-27",
+                "endDate": "2024-08-29",
                 "stayType": "trip"
             }
         ],
@@ -190,11 +163,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "14/09/2024 - 04/10/2024",
-                "startDate": "14/09/2024",
-                "endDate": "04/10/2024",
-                "month": 9,
-                "year": 2024,
+                "startDate": "2024-09-14",
+                "endDate": "2024-10-04",
                 "stayType": "trip"
             }
         ],
@@ -210,11 +180,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "03/05/2025 - 07/05/2025",
-                "startDate": "03/05/2025",
-                "endDate": "07/05/2025",
-                "month": 5,
-                "year": 2025,
+                "startDate": "2025-05-03",
+                "endDate": "2025-05-07",
                 "stayType": "trip"
             }
         ],
@@ -230,11 +197,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "01/01/1988 - 31/12/2023",
-                "startDate": "01/01/1988",
-                "endDate": "31/12/2023",
-                "month": 1,
-                "year": 1988,
+                "startDate": "1988-01-01",
+                "endDate": "2023-12-31",
                 "stayType": "stay",
                 "places": "Born and raised"
             }
@@ -251,11 +215,8 @@
         "continent": "Asia",
         "visits": [
             {
-                "date": "01/01/2023 - 29/06/2025",
-                "startDate": "01/01/2023",
-                "endDate": "29/06/2025",
-                "month": 1,
-                "year": 2023,
+                "startDate": "2023-01-01",
+                "endDate": "2025-06-29",
                 "stayType": "stay",
                 "places": "Current residence"
             }
