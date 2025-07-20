@@ -191,6 +191,40 @@
         }
     },
     {
+        "name": "United Kingdom",
+        "code": "GB",
+        "flag": "🇬🇧",
+        "continent": "Europe",
+        "visits": [
+            {
+                "startDate": "2025-07-01",
+                "endDate": "2025-07-15",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 55.3781,
+            "lng": -3.4360
+        }
+    },
+    {
+        "name": "Ireland",
+        "code": "IE",
+        "flag": "🇮🇪",
+        "continent": "Europe",
+        "visits": [
+            {
+                "startDate": "2025-07-09",
+                "endDate": "2025-07-13",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 53.1424,
+            "lng": -7.6921
+        }
+    },
+    {
         "name": "India",
         "code": "IN",
         "flag": "🇮🇳",
