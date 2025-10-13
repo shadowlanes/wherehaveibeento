@@ -66,11 +66,24 @@ class WhereHaveIBeenTo {
         });
     }
 
+    // Get countries sorted chronologically (oldest to newest)
+    getCountriesSortedChronologically() {
+        const countries = TravelData.getCountries();
+        
+        // Sort by earliest visit date for each country
+        return countries.sort((a, b) => {
+            const earliestA = Math.min(...a.visits.map(v => new Date(v.date).getTime()));
+            const earliestB = Math.min(...b.visits.map(v => new Date(v.date).getTime()));
+            return earliestA - earliestB;
+        });
+    }
+
     setupSidebar() {
         const countriesList = document.getElementById('countries-list');
         const travelSummary = document.getElementById('travel-summary');
 
-        const countries = TravelData.getCountriesSortedByRecentVisit();
+        // Get countries sorted chronologically (oldest to newest)
+        const countries = this.getCountriesSortedChronologically();
         const totalCountries = TravelData.getTotalCountries();
         const totalContinents = TravelData.getTotalContinents();
         const totalDays = TravelData.getTotalDaysAllCountries();
@@ -184,6 +197,26 @@ class WhereHaveIBeenTo {
             countryItem.style.cursor = 'pointer';
             countriesList.appendChild(countryItem);
         });
+
+        // Setup journey animation button
+        const playButton = document.getElementById('play-journey-btn');
+        if (playButton) {
+            playButton.addEventListener('click', () => {
+                if (this.globe) {
+                    // Change button text during animation
+                    playButton.textContent = 'Playing...';
+                    playButton.disabled = true;
+                    
+                    this.globe.startJourneyAnimation();
+                    
+                    // Reset button after animation completes (with some buffer time)
+                    setTimeout(() => {
+                        playButton.textContent = '▶ Play Journey';
+                        playButton.disabled = false;
+                    }, (countries.length * 4500) + 3000); // Estimate: ~4.5s per country + buffer
+                }
+            });
+        }
     }
 
     // Cleanup method to clear intervals
