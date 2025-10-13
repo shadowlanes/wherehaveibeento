@@ -44,6 +44,12 @@
                 "endDate": "2020-02-16",
                 "places": "Phuket, Krabi",
                 "stayType": "trip"
+            },
+            {
+                "startDate": "2025-09-15",
+                "endDate": "2025-09-21",
+                "places": "Bangkok, Phuket",
+                "stayType": "trip"
             }
         ],
         "coordinates": {
@@ -222,6 +228,96 @@
         "coordinates": {
             "lat": 53.1424,
             "lng": -7.6921
+        }
+    },
+    {
+        "name": "Vietnam",
+        "code": "VN",
+        "flag": "🇻🇳",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "2025-08-04",
+                "endDate": "2025-08-16",
+                "places": "Hanoi, Da Nang, Ho Chi Minh",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 14.0583,
+            "lng": 108.2772
+        }
+    },
+    {
+        "name": "Cambodia",
+        "code": "KH",
+        "flag": "🇰🇭",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "2025-08-16",
+                "endDate": "2025-08-21",
+                "places": "Phnom Penh, Siem Reap",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 12.5657,
+            "lng": 104.9910
+        }
+    },
+    {
+        "name": "Malaysia",
+        "code": "MY",
+        "flag": "🇲🇾",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "2025-08-21",
+                "endDate": "2025-08-27",
+                "places": "Kuala Lumpur, Penang",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 4.2105,
+            "lng": 101.9758
+        }
+    },
+    {
+        "name": "Indonesia",
+        "code": "ID",
+        "flag": "🇮🇩",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "2025-05-27",
+                "endDate": "2025-09-09",
+                "places": "Jakarta, Yogyakarta, Bali",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": -0.7893,
+            "lng": 113.9213
+        }
+    },
+    {
+        "name": "Philippines",
+        "code": "PH",
+        "flag": "🇵🇭",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "2025-09-09",
+                "endDate": "2025-09-15",
+                "places": "Manila, Boracay, El Nido",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 12.8797,
+            "lng": 121.7740
         }
     },
     {
