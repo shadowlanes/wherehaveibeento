@@ -27,8 +27,8 @@ class GlobeVisualization {
 
         // Initialize Globe.gl with container
         this.globe = Globe()(this.container)
-            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-            .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+            .globeImageUrl('assets/earth-night.jpg')
+            .backgroundImageUrl('assets/night-sky.png')
             .showAtmosphere(true)
             .atmosphereColor('lightskyblue')
             .atmosphereAltitude(0.2)
