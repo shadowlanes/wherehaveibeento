@@ -30,8 +30,8 @@ class GlobeVisualization {
             .globeImageUrl('assets/earth-night.jpg')
             .backgroundImageUrl('assets/night-sky.png')
             .showAtmosphere(true)
-            .atmosphereColor('lightskyblue')
-            .atmosphereAltitude(0.2)
+            .atmosphereColor('#00d4ff')
+            .atmosphereAltitude(0.25)
             .width(this.getResponsiveWidth())
             .height(this.getResponsiveHeight())
             // Points for visited countries
@@ -41,10 +41,10 @@ class GlobeVisualization {
             .pointColor(d => {
                 // Check if country has any stay visits
                 const hasStays = d.visits.some(visit => visit.stayType === 'stay');
-                return hasStays ? '#4a90e2' : '#ff9f43'; // Blue for stays, orange for trips
+                return hasStays ? '#00ff88' : '#ff6b35'; // Green for stays, orange for trips
             })
-            .pointAltitude(0.02)
-            .pointRadius(0.8)
+            .pointAltitude(0.03)
+            .pointRadius(0.9)
             .pointLabel(d => {
                 const mostRecentVisit = TravelData.getMostRecentVisit(d, true); // Include stays in most recent check
                 const hasStays = d.visits.some(visit => visit.stayType === 'stay');
@@ -55,28 +55,35 @@ class GlobeVisualization {
             .ringsData(TravelData.getCountries())
             .ringLat(d => d.coordinates.lat)
             .ringLng(d => d.coordinates.lng)
-            .ringMaxRadius(2)
-            .ringPropagationSpeed(1)
-            .ringRepeatPeriod(2000)
+            .ringMaxRadius(3)
+            .ringPropagationSpeed(1.5)
+            .ringRepeatPeriod(2500)
             .ringColor(d => {
                 // Match ring color to point color
                 const hasStays = d.visits.some(visit => visit.stayType === 'stay');
-                return hasStays ? ['#4a90e2', '#7bb3f0'] : ['#ff9f43', '#ffce54'];
+                return hasStays ? ['#00ff88', '#00d4ff'] : ['#ff6b35', '#ff0080'];
             })
+            // Hex polygons for atmosphere effect
+            .hexPolygonsData(TravelData.getCountries())
+            .hexPolygonResolution(3)
+            .hexPolygonMargin(0.3)
+            .hexPolygonColor(() => '#00d4ff')
+            .hexPolygonAltitude(0.001)
+            .hexPolygonLabel(d => '')
             // Event handlers
             .onPointHover((point, prevPoint) => {
                 this.container.style.cursor = point ? 'pointer' : 'auto';
             })
             .onPointClick(point => {
-                // Focus on clicked country
-                this.globe.pointOfView({ lat: point.coordinates.lat, lng: point.coordinates.lng, altitude: 2 }, 1000);
+                // Focus on clicked country with smooth animation
+                this.globe.pointOfView({ lat: point.coordinates.lat, lng: point.coordinates.lng, altitude: 1.5 }, 1500);
             });
 
         console.log('Globe initialized successfully');
 
-        // Enable auto-rotate
+        // Enable auto-rotate with slower speed for better viewing
         this.globe.controls().autoRotate = true;
-        this.globe.controls().autoRotateSpeed = 1; // Adjust speed as needed (positive = counterclockwise)
+        this.globe.controls().autoRotateSpeed = 0.5; // Slower rotation
 
         // Add resize listener
         window.addEventListener('resize', () => {
