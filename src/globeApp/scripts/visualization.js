@@ -192,18 +192,13 @@ class GlobeVisualization {
                 const threeLetterCode = country.id;
                 // Find the 2-letter code that maps to this 3-letter code
                 const twoLetterCode = Object.keys(this.countryCodeMap).find(key => this.countryCodeMap[key] === threeLetterCode);
-                const isVisited = twoLetterCode && visitedCountries.some(c => c.code === twoLetterCode);
-                
-                if (isVisited) {
-                    console.log(`✓ Found visited country: ${country.properties.name} (${threeLetterCode} -> ${twoLetterCode})`);
-                }
-                
-                return isVisited;
+                // Cache the twoLetterCode to avoid redundant lookups in map step
+                country._twoLetterCode = twoLetterCode;
+                return twoLetterCode && visitedCountries.some(c => c.code === twoLetterCode);
             })
             .map(country => {
-                // Add custom properties for styling
-                const threeLetterCode = country.id;
-                const twoLetterCode = Object.keys(this.countryCodeMap).find(key => this.countryCodeMap[key] === threeLetterCode);
+                // Use cached twoLetterCode from filter step
+                const twoLetterCode = country._twoLetterCode;
                 const visitedCountry = visitedCountries.find(c => c.code === twoLetterCode);
                 const hasStays = visitedCountry ? visitedCountry.visits.some(visit => visit.stayType === 'stay') : false;
                 
@@ -270,43 +265,6 @@ class GlobeVisualization {
             return mobileHeight;
         }
         return this.container.clientHeight;
-    }
-
-    getVisitedCountriesPolygons() {
-        if (!this.worldCountries || !this.worldCountries.features) {
-            console.warn('World countries data not available for polygon highlighting');
-            return [];
-        }
-
-        const visitedCountries = TravelData.getCountries();
-        
-        // Filter countries to only include visited ones
-        const polygons = this.worldCountries.features
-            .filter(country => {
-                const threeLetterCode = country.id;
-                // Find the 2-letter code that maps to this 3-letter code
-                const twoLetterCode = Object.keys(this.countryCodeMap).find(key => this.countryCodeMap[key] === threeLetterCode);
-                return twoLetterCode && visitedCountries.some(c => c.code === twoLetterCode);
-            })
-            .map(country => {
-                // Add custom properties for styling
-                const threeLetterCode = country.id;
-                const twoLetterCode = Object.keys(this.countryCodeMap).find(key => this.countryCodeMap[key] === threeLetterCode);
-                const visitedCountry = visitedCountries.find(c => c.code === twoLetterCode);
-                const hasStays = visitedCountry ? visitedCountry.visits.some(visit => visit.stayType === 'stay') : false;
-                
-                return {
-                    ...country,
-                    properties: {
-                        ...country.properties,
-                        hasStays: hasStays,
-                        name: visitedCountry ? visitedCountry.name : country.properties.name
-                    }
-                };
-            });
-
-        console.log(`Loaded ${polygons.length} country polygons for highlighting`);
-        return polygons;
     }
 
     // Get countries sorted chronologically by earliest visit date
