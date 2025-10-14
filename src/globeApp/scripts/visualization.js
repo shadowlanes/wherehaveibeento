@@ -11,6 +11,7 @@ class GlobeVisualization {
         this.isAnimating = false; // Track journey animation state
         this.journeyStep = 0; // Current step in journey animation
         this.journeyCountries = []; // Sorted countries for journey
+        this.cachedPolygons = null; // Cache polygons to avoid redundant processing
         
         // Animation timing constants
         this.PHASE_TRANSITION_DELAY = 800; // Brief pause before starting next animation phase
@@ -290,6 +291,9 @@ class GlobeVisualization {
         this.journeyStep = 0;
         this.journeyCountries = this.getChronologicalJourney();
         
+        // Cache polygons once to avoid redundant processing during animation
+        this.cachedPolygons = this.getVisitedCountriesPolygons();
+        
         console.log(`Starting journey animation with ${this.journeyCountries.length} countries`);
         
         // Clear any existing highlights
@@ -353,7 +357,7 @@ class GlobeVisualization {
             // Clear highlights and restore all polygons at the end
             this.clearCountryHighlights();
             setTimeout(() => {
-                this.globe.polygonsData(this.getVisitedCountriesPolygons());
+                this.globe.polygonsData(this.cachedPolygons);
             }, 1000);
             return;
         }
@@ -367,7 +371,7 @@ class GlobeVisualization {
         this.highlightCountryTile(currentCountry.code);
 
         // Highlight current country on globe
-        const currentPolygon = this.getVisitedCountriesPolygons().find(p => {
+        const currentPolygon = this.cachedPolygons.find(p => {
             const threeLetterCode = p.id;
             const twoLetterCode = Object.keys(this.countryCodeMap).find(key => this.countryCodeMap[key] === threeLetterCode);
             return twoLetterCode === currentCountry.code;
@@ -388,7 +392,7 @@ class GlobeVisualization {
         // If there's a next country, prepare it immediately and draw arc
         if (nextCountry) {
             // Prepare next country polygon for immediate highlighting
-            const nextPolygon = this.getVisitedCountriesPolygons().find(p => {
+            const nextPolygon = this.cachedPolygons.find(p => {
                 const threeLetterCode = p.id;
                 const twoLetterCode = Object.keys(this.countryCodeMap).find(key => this.countryCodeMap[key] === threeLetterCode);
                 return twoLetterCode === nextCountry.code;
