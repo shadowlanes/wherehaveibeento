@@ -12,6 +12,11 @@ class GlobeVisualization {
         this.journeyStep = 0; // Current step in journey animation
         this.journeyCountries = []; // Sorted countries for journey
         
+        // Animation timing constants
+        this.PHASE_TRANSITION_DELAY = 800; // Brief pause before starting next animation phase
+        this.ARC_ANIMATION_DURATION = 2000; // Duration for arc animation to complete
+        this.CAMERA_MOVEMENT_DURATION = 1500; // Duration for camera movement animation
+        
         // Country code mapping from 2-letter to 3-letter codes
         this.countryCodeMap = {
             'AF': 'AFG', 'AL': 'ALB', 'DZ': 'DZA', 'AS': 'ASM', 'AD': 'AND', 'AO': 'AGO', 'AI': 'AIA',
@@ -465,17 +470,17 @@ class GlobeVisualization {
                     setTimeout(() => {
                         this.journeyStep++;
                         this.animateJourneyStep();
-                    }, 1500); // Wait for camera movement
+                    }, this.CAMERA_MOVEMENT_DURATION); // Wait for camera movement
 
-                }, 2000); // Wait for arc to complete
+                }, this.ARC_ANIMATION_DURATION); // Wait for arc to complete
                 
-            }, 800); // Brief pause before starting next phase
+            }, this.PHASE_TRANSITION_DELAY); // Brief pause before starting next phase
         } else {
             // Last country, just wait then finish
             setTimeout(() => {
                 this.journeyStep++;
                 this.animateJourneyStep();
-            }, 2000);
+            }, this.ARC_ANIMATION_DURATION);
         }
     }
 
