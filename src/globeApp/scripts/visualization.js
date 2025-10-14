@@ -270,14 +270,7 @@ class GlobeVisualization {
 
     // Get countries sorted chronologically by earliest visit date
     getChronologicalJourney() {
-        const countries = TravelData.getCountries();
-        
-        // Sort by earliest visit date for each country
-        return countries.sort((a, b) => {
-            const earliestA = Math.min(...a.visits.map(v => new Date(v.date).getTime()));
-            const earliestB = Math.min(...b.visits.map(v => new Date(v.date).getTime()));
-            return earliestA - earliestB;
-        });
+        return TravelData.getCountriesSortedChronologically();
     }
 
     // Start the journey animation
