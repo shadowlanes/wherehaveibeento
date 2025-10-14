@@ -6,6 +6,11 @@ class WhereHaveIBeenTo {
         this.globe = null;
         this.currentStatementIndex = 0;
         this.statementInterval = null;
+        
+        // Animation timing constants
+        this.ANIMATION_DURATION_PER_COUNTRY = 4500; // ms per country in journey animation
+        this.ANIMATION_BUFFER_MS = 3000; // additional buffer time after animation
+        
         this.init();
     }
 
@@ -213,7 +218,7 @@ class WhereHaveIBeenTo {
                     setTimeout(() => {
                         playButton.textContent = '▶ Play Journey';
                         playButton.disabled = false;
-                    }, (countries.length * 4500) + 3000); // Estimate: ~4.5s per country + buffer
+                    }, (countries.length * this.ANIMATION_DURATION_PER_COUNTRY) + this.ANIMATION_BUFFER_MS);
                 }
             });
         }
