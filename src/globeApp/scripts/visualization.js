@@ -15,7 +15,7 @@ class GlobeVisualization {
         
         // Animation timing constants
         this.PHASE_TRANSITION_DELAY = 800; // Brief pause before starting next animation phase
-        this.ARC_ANIMATION_DURATION = 2000; // Duration for arc animation to complete
+        this.ARC_ANIMATION_DURATION = 2200; // Duration for arc animation to complete
         this.CAMERA_MOVEMENT_DURATION = 1500; // Duration for camera movement animation
         
         // Country code mapping from 2-letter to 3-letter codes
@@ -379,7 +379,7 @@ class GlobeVisualization {
                 lat: currentCountry.coordinates.lat, 
                 lng: currentCountry.coordinates.lng, 
                 altitude: 1.8 
-            }, 1000);
+            }, this.CAMERA_MOVEMENT_DURATION);
         }
 
         // If there's a next country, prepare it immediately and draw arc
