@@ -79,7 +79,8 @@ fetch(`data/${user}.json`)
             const airportData = airports[airportCode];
             if (airportData) {
                 const visits = airportVisits[airportCode];
-                const popupContent = `<strong>${airportData.name}</strong><br>` +
+                const popupContent = `<strong>${airportData.city}</strong><br>` +
+                    `${airportData.name}<br>` +
                     `Visits: ${visits.length}<br>` +
                     visits.map(v => `${v.flight} on ${v.date}`).join('<br>');
                 
