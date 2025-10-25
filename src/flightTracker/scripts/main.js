@@ -20,9 +20,14 @@ fetch(`data/${user}.json`)
             initialZoom = 5;
         }
         
-        const map = L.map('map').setView(initialCoords, initialZoom);
+        const map = L.map('map', {
+            maxBounds: [[-90, -180], [90, 180]],
+            maxBoundsViscosity: 1.0,
+            minZoom: 2
+        }).setView(initialCoords, initialZoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors',
+            noWrap: true
         }).addTo(map);
 
         // Test marker
