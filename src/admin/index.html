@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Tracker Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Flight Tracker Admin</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('flight-maker')">Flight - User Maker</button>
+            <button class="tab-button" onclick="showTab('airport-adder')">Airport Adder</button>
+        </div>
+
+        <!-- Flight Maker Tab -->
+        <div id="flight-maker" class="tab-content active">
+            <h2>Create User Flight Data</h2>
+            
+            <div class="user-section">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter username to load existing data">
+                </div>
+                <button class="btn btn-add" onclick="loadUserData()">Load User Data</button>
+            </div>
+            
+            <div id="flights-container"></div>
+            
+            <button class="btn btn-add" onclick="addFlight()">+ Add Flight</button>
+            <button class="btn btn-download" onclick="downloadJSON()">Download JSON</button>
+        </div>
+
+        <!-- Airport Adder Tab -->
+        <div id="airport-adder" class="tab-content">
+            <h2>Add Airport</h2>
+            <p>Coming soon...</p>
+        </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+</body>
+</html>
