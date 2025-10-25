@@ -55,17 +55,21 @@ function addFlight(flightData = null) {
         </div>
         <div class="form-group">
             <label>From</label>
-            <select class="from-airport" required>
-                <option value="">Select Airport</option>
+            <input type="text" class="from-airport" list="airports-list-${flightId}-from" 
+                   value="${flightData ? flightData.from : ''}" 
+                   placeholder="Search airport..." required>
+            <datalist id="airports-list-${flightId}-from">
                 ${airportOptions}
-            </select>
+            </datalist>
         </div>
         <div class="form-group">
             <label>To</label>
-            <select class="to-airport" required>
-                <option value="">Select Airport</option>
+            <input type="text" class="to-airport" list="airports-list-${flightId}-to" 
+                   value="${flightData ? flightData.to : ''}" 
+                   placeholder="Search airport..." required>
+            <datalist id="airports-list-${flightId}-to">
                 ${airportOptions}
-            </select>
+            </datalist>
         </div>
         <div class="form-group">
             <label>Flight Number</label>
@@ -78,12 +82,6 @@ function addFlight(flightData = null) {
     `;
     
     container.appendChild(flightRow);
-    
-    // Set selected values for airports if data provided
-    if (flightData) {
-        flightRow.querySelector('.from-airport').value = flightData.from;
-        flightRow.querySelector('.to-airport').value = flightData.to;
-    }
 }
 
 // Remove flight row
@@ -97,11 +95,16 @@ function removeFlight(flightId) {
 // Load user data from remote server
 function loadUserData() {
     const username = document.getElementById('username').value.trim().toLowerCase();
+    const statusDiv = document.getElementById('load-status');
     
     if (!username) {
-        alert('Please enter a username');
+        statusDiv.className = 'load-status error';
+        statusDiv.textContent = 'Please enter a username';
         return;
     }
+    
+    statusDiv.className = 'load-status';
+    statusDiv.textContent = 'Loading...';
     
     currentUsername = username;
     const url = `https://flights.wherehaveibeento.me/data/${username}.json`;
@@ -123,11 +126,13 @@ function loadUserData() {
                 addFlight(flight);
             });
             
-            alert(`Loaded ${flights.length} flights for ${username}`);
+            statusDiv.className = 'load-status success';
+            statusDiv.textContent = `✓ Loaded ${flights.length} flight${flights.length !== 1 ? 's' : ''} for ${username}`;
         })
         .catch(error => {
             console.error('Error loading user data:', error);
-            alert(`Failed to load data for ${username}. User might not exist or there was a network error.`);
+            statusDiv.className = 'load-status error';
+            statusDiv.textContent = `✗ User "${username}" not found`;
         });
 }
 
@@ -135,13 +140,19 @@ function loadUserData() {
 function downloadJSON() {
     const flightRows = document.querySelectorAll('.flight-row');
     const flights = [];
+    const emptyRows = [];
+    const incompleteRows = [];
     
-    flightRows.forEach(row => {
-        const tripDate = row.querySelector('.trip-date').value;
-        const from = row.querySelector('.from-airport').value;
-        const to = row.querySelector('.to-airport').value;
-        const flight = row.querySelector('.flight-number').value;
+    // Clear any previous highlights
+    flightRows.forEach(row => row.classList.remove('row-error'));
+    
+    flightRows.forEach((row, index) => {
+        const tripDate = row.querySelector('.trip-date').value.trim();
+        const from = row.querySelector('.from-airport').value.trim();
+        const to = row.querySelector('.to-airport').value.trim();
+        const flight = row.querySelector('.flight-number').value.trim();
         
+        // Check if all fields are filled
         if (tripDate && from && to && flight) {
             flights.push({
                 tripDate,
@@ -149,11 +160,28 @@ function downloadJSON() {
                 to,
                 flight
             });
+        } else if (tripDate || from || to || flight) {
+            // Row has some data but not all fields filled
+            incompleteRows.push(index + 1);
+            row.classList.add('row-error');
+        } else {
+            // Completely empty row
+            emptyRows.push(index + 1);
         }
     });
     
+    // Validate all rows are complete
+    if (incompleteRows.length > 0) {
+        const statusDiv = document.getElementById('load-status');
+        statusDiv.className = 'load-status error';
+        statusDiv.textContent = `✗ Incomplete data in row${incompleteRows.length > 1 ? 's' : ''}: ${incompleteRows.join(', ')}. Please fill all fields.`;
+        return;
+    }
+    
     if (flights.length === 0) {
-        alert('Please add at least one flight with all fields filled');
+        const statusDiv = document.getElementById('load-status');
+        statusDiv.className = 'load-status error';
+        statusDiv.textContent = '✗ Please add at least one flight with all fields filled';
         return;
     }
     
@@ -173,4 +201,9 @@ function downloadJSON() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    
+    // Show success message
+    const statusDiv = document.getElementById('load-status');
+    statusDiv.className = 'load-status success';
+    statusDiv.textContent = `✓ Downloaded ${flights.length} flight${flights.length !== 1 ? 's' : ''} as ${filename}`;
 }

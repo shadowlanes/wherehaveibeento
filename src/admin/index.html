@@ -11,8 +11,8 @@
         <h1>Flight Tracker Admin</h1>
         
         <div class="tabs">
-            <button class="tab-button active" onclick="showTab('flight-maker')">Flight - User Maker</button>
-            <button class="tab-button" onclick="showTab('airport-adder')">Airport Adder</button>
+            <button class="tab-button active" onclick="showTab('flight-maker')">User Data</button>
+            <button class="tab-button" onclick="showTab('airport-adder')">Airport Data</button>
         </div>
 
         <!-- Flight Maker Tab -->
@@ -24,7 +24,11 @@
                     <label>Username</label>
                     <input type="text" id="username" placeholder="Enter username to load existing data">
                 </div>
-                <button class="btn btn-add" onclick="loadUserData()">Load User Data</button>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-add" onclick="loadUserData()">Load User Data</button>
+                </div>
+                <div id="load-status" class="load-status"></div>
             </div>
             
             <div id="flights-container"></div>

@@ -32,9 +32,10 @@ h2 {
 
 /* User Section */
 .user-section {
-    display: flex;
+    display: grid;
+    grid-template-columns: 300px auto 1fr;
     gap: 15px;
-    align-items: end;
+    align-items: start;
     margin-bottom: 30px;
     padding: 20px;
     background: #f0f8ff;
@@ -42,8 +43,44 @@ h2 {
 }
 
 .user-section .form-group {
-    flex: 1;
-    max-width: 300px;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-section .form-group label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+    min-height: 17px;
+}
+
+.user-section .btn {
+    margin-top: 0;
+    padding: 8px 16px;
+    white-space: nowrap;
+}
+
+.load-status {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 22px;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+}
+
+.load-status.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.load-status.error {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
 /* Tabs */
@@ -92,6 +129,13 @@ h2 {
     background: #f9f9f9;
     border-radius: 4px;
     align-items: end;
+    transition: all 0.3s;
+}
+
+.flight-row.row-error {
+    background: #ffe6e6;
+    border: 2px solid #dc3545;
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.3);
 }
 
 .form-group {
