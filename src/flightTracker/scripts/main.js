@@ -45,6 +45,9 @@ fetch(`data/${user}.json`)
             popupAnchor: [0, -6]
         });
 
+        // Track unique airports and their visits
+        const airportVisits = {};
+        
         // Plot flights
         trips.forEach(trip => {
             console.log('Plotting trip:', trip);
@@ -54,9 +57,35 @@ fetch(`data/${user}.json`)
             if (fromData && toData) {
                 const from = fromData.coords;
                 const to = toData.coords;
+                
+                // Draw flight path
                 L.polyline([from, to], {color: '#07669D', weight: 3}).addTo(map);
-                L.marker(from, {icon: smallIcon}).addTo(map).bindPopup(`${fromData.name}\nFlight: ${trip.flight} on ${trip.tripDate}`);
-                L.marker(to, {icon: smallIcon}).addTo(map).bindPopup(`${toData.name}\nFlight: ${trip.flight} on ${trip.tripDate}`);
+                
+                // Track airport visits
+                if (!airportVisits[trip.from]) {
+                    airportVisits[trip.from] = [];
+                }
+                airportVisits[trip.from].push({flight: trip.flight, date: trip.tripDate, type: 'departure'});
+                
+                if (!airportVisits[trip.to]) {
+                    airportVisits[trip.to] = [];
+                }
+                airportVisits[trip.to].push({flight: trip.flight, date: trip.tripDate, type: 'arrival'});
+            }
+        });
+        
+        // Create markers for unique airports with all visits listed
+        Object.keys(airportVisits).forEach(airportCode => {
+            const airportData = airports[airportCode];
+            if (airportData) {
+                const visits = airportVisits[airportCode];
+                const popupContent = `<strong>${airportData.name}</strong><br>` +
+                    `Visits: ${visits.length}<br>` +
+                    visits.map(v => `${v.flight} on ${v.date}`).join('<br>');
+                
+                L.marker(airportData.coords, {icon: smallIcon})
+                    .addTo(map)
+                    .bindPopup(popupContent);
             }
         });
 
