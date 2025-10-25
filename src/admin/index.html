@@ -39,8 +39,34 @@
 
         <!-- Airport Adder Tab -->
         <div id="airport-adder" class="tab-content">
-            <h2>Add Airport</h2>
-            <p>Coming soon...</p>
+            <h2>Manage Airports</h2>
+            
+            <div class="airport-section">
+                <button class="btn btn-add" onclick="loadAirportData()">Load Airport Data</button>
+                <div id="airport-load-status" class="load-status"></div>
+            </div>
+
+            <div class="airport-list-section">
+                <h3>Existing Airports (<span id="airport-count">0</span>)</h3>
+                <div id="airports-list" class="airports-grid"></div>
+            </div>
+
+            <div class="add-airport-section">
+                <h3>Add New Airport</h3>
+                <div class="add-airport-form">
+                    <div class="form-group">
+                        <label>IATA Code</label>
+                        <input type="text" id="new-airport-code" placeholder="e.g. BLR" maxlength="3" style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-add" onclick="addNewAirport()">Add Airport</button>
+                    </div>
+                    <div id="add-airport-status" class="load-status"></div>
+                </div>
+            </div>
+
+            <button class="btn btn-download" onclick="downloadAirportJSON()">Download airports.json</button>
         </div>
     </div>
 

@@ -207,3 +207,145 @@ function downloadJSON() {
     statusDiv.className = 'load-status success';
     statusDiv.textContent = `✓ Downloaded ${flights.length} flight${flights.length !== 1 ? 's' : ''} as ${filename}`;
 }
+
+// Airport Management Functions
+let airportsData = {};
+
+// Load airport data from remote server
+function loadAirportData() {
+    const statusDiv = document.getElementById('airport-load-status');
+    statusDiv.className = 'load-status';
+    statusDiv.textContent = 'Loading airports...';
+    
+    const url = 'https://flights.wherehaveibeento.me/data/airports.json';
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Airport data not found');
+            }
+            return response.json();
+        })
+        .then(data => {
+            airportsData = data;
+            displayAirports();
+            
+            statusDiv.className = 'load-status success';
+            statusDiv.textContent = `✓ Loaded ${Object.keys(airportsData).length} airports`;
+        })
+        .catch(error => {
+            console.error('Error loading airport data:', error);
+            statusDiv.className = 'load-status error';
+            statusDiv.textContent = '✗ Failed to load airport data';
+        });
+}
+
+// Display airports in the grid
+function displayAirports() {
+    const container = document.getElementById('airports-list');
+    const count = document.getElementById('airport-count');
+    
+    const airportCodes = Object.keys(airportsData).sort();
+    count.textContent = airportCodes.length;
+    
+    if (airportCodes.length === 0) {
+        container.innerHTML = '<p style="padding: 20px; text-align: center; color: #666;">No airports loaded yet</p>';
+        return;
+    }
+    
+    container.innerHTML = airportCodes.map(code => {
+        const airport = airportsData[code];
+        return `<div class="airport-item">
+            <strong>${code}</strong> - ${airport.city || 'Unknown'}<br>
+            <small style="color: #666;">${airport.name || 'N/A'}</small>
+        </div>`;
+    }).join('');
+}
+
+// Add new airport
+function addNewAirport() {
+    const codeInput = document.getElementById('new-airport-code');
+    const code = codeInput.value.trim().toUpperCase();
+    const statusDiv = document.getElementById('add-airport-status');
+    
+    if (!code || code.length !== 3) {
+        statusDiv.className = 'load-status error';
+        statusDiv.textContent = '✗ Please enter a valid 3-letter IATA code';
+        return;
+    }
+    
+    if (airportsData[code]) {
+        statusDiv.className = 'load-status error';
+        statusDiv.textContent = `✗ Airport ${code} already exists`;
+        return;
+    }
+    
+    // Show loading state
+    statusDiv.className = 'load-status';
+    statusDiv.textContent = `Fetching details for ${code}...`;
+    
+    // Fetch airport details from API
+    fetch(`https://iata-airports.p.rapidapi.com/airports/${code}/`, {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-host': 'iata-airports.p.rapidapi.com',
+            'x-rapidapi-key': 'f6a8296e02msh22e313fbb77b5f3p10a69cjsnea71dd865068'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Airport not found');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Validate we got the required data
+        if (!data.code || !data.name || !data.city || data.latitude === undefined || data.longitude === undefined) {
+            throw new Error('Incomplete airport data received');
+        }
+        
+        // Add airport to our data
+        airportsData[code] = {
+            name: data.name,
+            city: data.city,
+            coords: [data.latitude, data.longitude]
+        };
+        
+        displayAirports();
+        codeInput.value = '';
+        
+        statusDiv.className = 'load-status success';
+        statusDiv.textContent = `✓ Added ${code} - ${data.city} (${data.name})`;
+    })
+    .catch(error => {
+        console.error('Error fetching airport data:', error);
+        statusDiv.className = 'load-status error';
+        statusDiv.textContent = `✗ Failed to fetch details for ${code}. Airport may not exist or API error occurred.`;
+    });
+}
+
+// Download airports.json
+function downloadAirportJSON() {
+    const statusDiv = document.getElementById('add-airport-status');
+    
+    if (Object.keys(airportsData).length === 0) {
+        statusDiv.className = 'load-status error';
+        statusDiv.textContent = '✗ No airports to download. Load data first.';
+        return;
+    }
+    
+    const jsonString = JSON.stringify(airportsData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'airports.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    statusDiv.className = 'load-status success';
+    statusDiv.textContent = `✓ Downloaded ${Object.keys(airportsData).length} airports as airports.json`;
+}
