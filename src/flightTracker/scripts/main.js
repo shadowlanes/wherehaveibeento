@@ -25,13 +25,15 @@ fetch(`data/${user}.json`)
         // Plot flights
         trips.forEach(trip => {
             console.log('Plotting trip:', trip);
-            const from = airports[trip.from];
-            const to = airports[trip.to];
-            console.log('From coords:', from, 'To coords:', to);
-            if (from && to) {
+            const fromData = airports[trip.from];
+            const toData = airports[trip.to];
+            console.log('From data:', fromData, 'To data:', toData);
+            if (fromData && toData) {
+                const from = fromData.coords;
+                const to = toData.coords;
                 L.polyline([from, to], {color: 'blue', weight: 3}).addTo(map);
-                L.marker(from).addTo(map).bindPopup(`${trip.flight} on ${trip.tripDate}`);
-                L.marker(to).addTo(map).bindPopup(`${trip.flight} on ${trip.tripDate}`);
+                L.marker(from).addTo(map).bindPopup(`${fromData.name}\nFlight: ${trip.flight} on ${trip.tripDate}`);
+                L.marker(to).addTo(map).bindPopup(`${toData.name}\nFlight: ${trip.flight} on ${trip.tripDate}`);
             }
         });
 
