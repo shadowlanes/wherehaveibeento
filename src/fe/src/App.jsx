@@ -106,8 +106,6 @@ function App() {
               <MapControls
                 viewMode={viewMode}
                 onViewModeChange={setViewMode}
-                airportCount={uniqueAirports}
-                visitCount={uniqueCountries}
               />
 
               {/* Stats Card */}
