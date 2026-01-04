@@ -20,29 +20,22 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Custom airport marker icon with vibrant gradient
+// Custom airport marker icon with refined styling
 const createAirportIcon = (visitCount) => {
   return L.divIcon({
     className: "custom-airport-marker",
     html: `
       <div style="
-        width: 18px;
-        height: 18px;
-        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-        border: 3px solid white;
+        width: 14px;
+        height: 14px;
+        background: #7c6bdb;
+        border: 2.5px solid white;
         border-radius: 50%;
-        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.6), 0 0 20px rgba(236, 72, 153, 0.4);
-        animation: pulse 2s ease-in-out infinite;
+        box-shadow: 0 2px 8px rgba(124, 107, 219, 0.4), 0 0 0 1px rgba(124, 107, 219, 0.1);
       "></div>
-      <style>
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-        }
-      </style>
     `,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
   });
 };
 
@@ -125,11 +118,11 @@ function CountryPolygons({ visits }) {
     const isStay = visit.visits.some((v) => v.stayType === "stay");
 
     return {
-      fillColor: isStay ? "#10b981" : "#f97316", // Green for stays, orange for trips
-      fillOpacity: 0.5,
-      color: isStay ? "#059669" : "#ea580c", // Darker border
-      weight: 3,
-      opacity: 0.8,
+      fillColor: isStay ? "#1ca5b8" : "#f59e0b", // Teal for stays, amber for trips
+      fillOpacity: 0.3,
+      color: isStay ? "#1ca5b8" : "#f59e0b",
+      weight: 2,
+      opacity: 0.6,
     };
   };
 
@@ -138,15 +131,15 @@ function CountryPolygons({ visits }) {
       mouseover: (e) => {
         const layer = e.target;
         layer.setStyle({
-          fillOpacity: 0.7,
-          weight: 4,
+          fillOpacity: 0.5,
+          weight: 2.5,
         });
       },
       mouseout: (e) => {
         const layer = e.target;
         layer.setStyle({
-          fillOpacity: 0.5,
-          weight: 3,
+          fillOpacity: 0.3,
+          weight: 2,
         });
       },
     });
@@ -328,18 +321,17 @@ export default function TravelMap({
         {/* Country polygons - render first so they're underneath */}
         {shouldShowVisits && <CountryPolygons visits={countryMarkers} />}
 
-        {/* Flight paths with vibrant gradient effect */}
+        {/* Flight paths with refined styling */}
         {shouldShowAirports &&
           flightPaths.map((path) => (
             <Polyline
               key={path.key}
               positions={path.positions}
               pathOptions={{
-                color: "#06b6d4",
-                weight: 3,
-                opacity: 0.8,
-                dashArray: "10, 10",
-                className: "flight-path-glow",
+                color: "#7c6bdb",
+                weight: 2,
+                opacity: 0.5,
+                dashArray: "8, 8",
               }}
             />
           ))}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Fredoka:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
@@ -37,40 +37,40 @@
 
 @layer base {
     :root {
-        /* Vibrant tropical gradient background */
-        --background: 280 100% 98%;
-        --foreground: 280 80% 10%;
+        /* Apple-inspired subtle color palette */
+        --background: 220 20% 97%;
+        --foreground: 220 15% 20%;
 
-        /* Bright card colors */
+        /* Glass card colors */
         --card: 0 0% 100%;
-        --card-foreground: 280 70% 15%;
+        --card-foreground: 220 15% 20%;
 
         --popover: 0 0% 100%;
-        --popover-foreground: 280 70% 15%;
+        --popover-foreground: 220 15% 20%;
 
-        /* Bold primary - vibrant pink/magenta */
-        --primary: 330 85% 55%;
+        /* Primary - refined blue */
+        --primary: 211 100% 50%;
         --primary-foreground: 0 0% 100%;
 
-        /* Bright secondary - tropical teal */
-        --secondary: 180 80% 50%;
+        /* Secondary - elegant purple */
+        --secondary: 250 60% 58%;
         --secondary-foreground: 0 0% 100%;
 
-        /* Fun muted colors */
-        --muted: 280 60% 95%;
-        --muted-foreground: 280 30% 45%;
+        /* Muted colors */
+        --muted: 220 15% 95%;
+        --muted-foreground: 220 10% 45%;
 
-        /* Bright accent - sunny orange */
-        --accent: 35 100% 55%;
+        /* Accent - sophisticated teal */
+        --accent: 189 85% 45%;
         --accent-foreground: 0 0% 100%;
 
-        --destructive: 0 85% 60%;
+        --destructive: 0 72% 51%;
         --destructive-foreground: 0 0% 100%;
 
-        --border: 280 30% 90%;
-        --input: 280 30% 90%;
-        --ring: 330 85% 55%;
-        --radius: 1rem;
+        --border: 220 15% 88%;
+        --input: 220 15% 92%;
+        --ring: 211 100% 50%;
+        --radius: 0.875rem;
     }
 }
 
@@ -81,59 +81,80 @@
 
     body {
         @apply text-foreground;
-        font-family: 'Poppins', sans-serif;
-        /* Vibrant gradient background */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-feature-settings: 'cv11', 'ss01';
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        /* Subtle gradient background */
         background: linear-gradient(135deg,
-            #667eea 0%,
-            #764ba2 25%,
-            #f093fb 50%,
-            #4facfe 75%,
-            #00f2fe 100%
+            #e8eef5 0%,
+            #f0f4f8 50%,
+            #e1e9f2 100%
         );
         background-attachment: fixed;
         min-height: 100vh;
     }
 
     h1, h2, h3 {
-        font-family: 'Fredoka', sans-serif;
         font-weight: 700;
+        letter-spacing: -0.02em;
     }
 }
 
-/* Fun animations */
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+/* Glassmorphism utility classes */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-@keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 237, 0.5); }
-    50% { box-shadow: 0 0 40px rgba(255, 107, 237, 0.8); }
+.glass-dark {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Refined animations */
+@keyframes subtle-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes subtle-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
 }
 
 .float-animation {
-    animation: float 3s ease-in-out infinite;
+    animation: subtle-float 4s ease-in-out infinite;
 }
 
-.glow-animation {
-    animation: pulse-glow 2s ease-in-out infinite;
+.pulse-animation {
+    animation: subtle-pulse 3s ease-in-out infinite;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar with Apple aesthetics */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #ff6bdd, #ffa94d);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #ff3db9, #ff8c1a);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Selection styling */
+::selection {
+    background-color: rgba(0, 122, 255, 0.2);
+    color: inherit;
 }
