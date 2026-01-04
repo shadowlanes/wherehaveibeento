@@ -1,0 +1,54 @@
+[
+    {
+        "name": "United Arab Emirates",
+        "code": "AE",
+        "flag": "🇦🇪",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "2025-01-10",
+                "endDate": "2025-01-23",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 23.4241,
+            "lng": 53.8478
+        }
+    },
+    {
+        "name": "Vietnam",
+        "code": "VN",
+        "flag": "🇻🇳",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "2025-06-06",
+                "endDate": "2025-06-15",
+                "stayType": "trip"
+            }
+        ],
+        "coordinates": {
+            "lat": 14.0583,
+            "lng": 108.2772
+        }
+    },
+    {
+        "name": "India",
+        "code": "IN",
+        "flag": "🇮🇳",
+        "continent": "Asia",
+        "visits": [
+            {
+                "startDate": "1992-01-01",
+                "endDate": "2023-12-31",
+                "stayType": "stay",
+                "places": "Born and raised"
+            }
+        ],
+        "coordinates": {
+            "lat": 20.5937,
+            "lng": 78.9629
+        }
+    }
+]
