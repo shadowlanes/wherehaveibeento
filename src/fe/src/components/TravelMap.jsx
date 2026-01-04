@@ -11,41 +11,55 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-// Custom airport marker icon
+// Custom airport marker icon with vibrant gradient
 const createAirportIcon = (visitCount) => {
   return L.divIcon({
     className: 'custom-airport-marker',
     html: `
       <div style="
-        width: 12px;
-        height: 12px;
-        background-color: #8b5cf6;
-        border: 2px solid white;
+        width: 18px;
+        height: 18px;
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        border: 3px solid white;
         border-radius: 50%;
-        box-shadow: 0 0 4px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.6), 0 0 20px rgba(236, 72, 153, 0.4);
+        animation: pulse 2s ease-in-out infinite;
       "></div>
+      <style>
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+        }
+      </style>
     `,
-    iconSize: [12, 12],
-    iconAnchor: [6, 6],
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
   });
 };
 
-// Custom country marker icon
+// Custom country marker icon with vibrant gradient
 const createCountryIcon = () => {
   return L.divIcon({
     className: 'custom-country-marker',
     html: `
       <div style="
-        width: 16px;
-        height: 16px;
-        background-color: #f97316;
-        border: 2px solid white;
+        width: 22px;
+        height: 22px;
+        background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+        border: 3px solid white;
         border-radius: 50%;
-        box-shadow: 0 0 6px rgba(0,0,0,0.4);
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.6), 0 0 20px rgba(239, 68, 68, 0.4);
+        animation: bounce 3s ease-in-out infinite;
       "></div>
+      <style>
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
+        }
+      </style>
     `,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
   });
 };
 
@@ -170,15 +184,17 @@ export default function TravelMap({ flights, airports, visits, viewMode = 'both'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Flight paths */}
+        {/* Flight paths with vibrant gradient effect */}
         {shouldShowAirports && flightPaths.map(path => (
           <Polyline
             key={path.key}
             positions={path.positions}
             pathOptions={{
-              color: '#3b82f6',
-              weight: 2,
-              opacity: 0.6
+              color: '#06b6d4',
+              weight: 3,
+              opacity: 0.8,
+              dashArray: '10, 10',
+              className: 'flight-path-glow'
             }}
           />
         ))}

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Fredoka:wght@400;600;700&display=swap');
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
@@ -36,26 +37,40 @@
 
 @layer base {
     :root {
-        --background: 222 47% 11%;
-        --foreground: 210 40% 98%;
-        --card: 222 47% 11%;
-        --card-foreground: 210 40% 98%;
-        --popover: 222 47% 11%;
-        --popover-foreground: 210 40% 98%;
-        --primary: 217 91% 60%;
-        --primary-foreground: 222 47% 11%;
-        --secondary: 217 33% 17%;
-        --secondary-foreground: 210 40% 98%;
-        --muted: 223 47% 16%;
-        --muted-foreground: 215 20% 65%;
-        --accent: 217 33% 17%;
-        --accent-foreground: 210 40% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 217 33% 17%;
-        --input: 217 33% 17%;
-        --ring: 224 71% 4%;
-        --radius: 0.5rem;
+        /* Vibrant tropical gradient background */
+        --background: 280 100% 98%;
+        --foreground: 280 80% 10%;
+
+        /* Bright card colors */
+        --card: 0 0% 100%;
+        --card-foreground: 280 70% 15%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 280 70% 15%;
+
+        /* Bold primary - vibrant pink/magenta */
+        --primary: 330 85% 55%;
+        --primary-foreground: 0 0% 100%;
+
+        /* Bright secondary - tropical teal */
+        --secondary: 180 80% 50%;
+        --secondary-foreground: 0 0% 100%;
+
+        /* Fun muted colors */
+        --muted: 280 60% 95%;
+        --muted-foreground: 280 30% 45%;
+
+        /* Bright accent - sunny orange */
+        --accent: 35 100% 55%;
+        --accent-foreground: 0 0% 100%;
+
+        --destructive: 0 85% 60%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 280 30% 90%;
+        --input: 280 30% 90%;
+        --ring: 330 85% 55%;
+        --radius: 1rem;
     }
 }
 
@@ -65,7 +80,60 @@
     }
 
     body {
-        @apply bg-background text-foreground;
-        font-family: 'Inter', sans-serif;
+        @apply text-foreground;
+        font-family: 'Poppins', sans-serif;
+        /* Vibrant gradient background */
+        background: linear-gradient(135deg,
+            #667eea 0%,
+            #764ba2 25%,
+            #f093fb 50%,
+            #4facfe 75%,
+            #00f2fe 100%
+        );
+        background-attachment: fixed;
+        min-height: 100vh;
     }
+
+    h1, h2, h3 {
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 700;
+    }
+}
+
+/* Fun animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 237, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(255, 107, 237, 0.8); }
+}
+
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+.glow-animation {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff6bdd, #ffa94d);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ff3db9, #ff8c1a);
 }
